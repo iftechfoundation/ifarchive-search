@@ -1,18 +1,24 @@
 import datetime
 import re
 
-### stemming
+### create vs rebuild
 ### store in sqlite?
+### tuid
 
 from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID, DATETIME, NUMERIC, STORED
+from whoosh.analysis import StemmingAnalyzer, CharsetFilter
+from whoosh.support.charset import accent_map
 
 import ifarchivexml
 (root, dirs, files) = ifarchivexml.parse('Master-Index.xml')
 
+# Analyzer that does case-folding, stopwords, stemming, and accent-folding
+analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
+
 schema = Schema(
     type=STORED,
-    description=TEXT,
+    description=TEXT(analyzer=analyzer),
     name=ID,
     path=ID(stored=True),
     date=DATETIME(stored=True),
@@ -26,9 +32,9 @@ pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
 
 def builddesc(obj):
     alldesc = []
-    if dir.description:
-        alldesc.append(dir.description)
-    for desc in dir.parentdescs.values():
+    if obj.description:
+        alldesc.append(obj.description)
+    for desc in obj.parentdescs.values():
         if desc:
             alldesc.append(desc)
         
@@ -62,7 +68,7 @@ for file in files.values():
     if file.rawdate is not None:
         date = datetime.datetime.fromtimestamp(file.rawdate)
 
-    alldesc = builddesc(dir)
+    alldesc = builddesc(file)
 
     writer.add_document(
         path = file.path,
