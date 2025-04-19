@@ -55,8 +55,8 @@ for dir in dirs.values():
     alldesc = builddesc(dir)
         
     tuids = None
-    #if 'tuid' in dir.metadata:
-    #    tuids = ' '.join(dir.metadata['tuid'])
+    if dir.metadata and 'tuid' in dir.metadata:
+        tuids = ' '.join(dir.metadata['tuid'])
         
     writer.add_document(
         path = dir.name,
