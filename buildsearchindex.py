@@ -6,7 +6,7 @@ import re
 ### tuid
 
 from whoosh.index import create_in
-from whoosh.fields import Schema, TEXT, ID, DATETIME, NUMERIC, STORED
+from whoosh.fields import Schema, TEXT, ID, KEYWORD, DATETIME, NUMERIC, STORED
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 from whoosh.support.charset import accent_map
 
@@ -23,6 +23,7 @@ schema = Schema(
     path=ID(stored=True),
     date=DATETIME(stored=True),
     size=NUMERIC,
+    tuid=KEYWORD,
     )
 
 index = create_in('indexdir', schema)
@@ -53,11 +54,16 @@ for dir in dirs.values():
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
         
+    tuids = None
+    #if 'tuid' in dir.metadata:
+    #    tuids = ' '.join(dir.metadata['tuid'])
+        
     writer.add_document(
         path = dir.name,
         name = name,
         type = 'dir',
         description = alldesc,
+        tuid = tuids,
     )
     itemcount += 1
     
@@ -69,6 +75,10 @@ for file in files.values():
         date = datetime.datetime.fromtimestamp(file.rawdate)
 
     alldesc = builddesc(file)
+    
+    tuids = None
+    if file.metadata and 'tuid' in file.metadata:
+        tuids = ' '.join(file.metadata['tuid'])
 
     writer.add_document(
         path = file.path,
@@ -77,6 +87,7 @@ for file in files.values():
         description = alldesc,
         date = date,
         size = file.size,
+        tuid = tuids,
     )
     itemcount += 1
 
