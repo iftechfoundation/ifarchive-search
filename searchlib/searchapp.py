@@ -1,10 +1,14 @@
 import threading
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from whoosh.index import open_dir
+from whoosh.qparser import QueryParser
+from whoosh.qparser.dateparse import DateParserPlugin
 
 from tinyapp.app import TinyApp, TinyRequest
 from tinyapp.handler import ReqHandler
 import tinyapp.auth
+
 
 class SearchApp(TinyApp):
     """SearchApp: The TinyApp class.
@@ -13,11 +17,16 @@ class SearchApp(TinyApp):
     def __init__(self, config, hanclasses):
         TinyApp.__init__(self, hanclasses)
 
+        self.searchindexdir = config['Search']['SearchIndexDir']
         self.approot = config['Search']['AppRoot']
         self.template_path = config['Search']['TemplateDir']
 
         # Thread-local storage for various things which are not thread-safe.
         self.threadcache = threading.local()
+
+        self.searchindex = open_dir(self.searchindexdir)
+        self.queryparser = QueryParser('description', self.searchindex.schema)
+        self.queryparser.add_plugin(DateParserPlugin(free=True))
 
     def getjenv(self):
         """Get or create a jinja template environment. These are

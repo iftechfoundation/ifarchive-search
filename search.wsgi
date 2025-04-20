@@ -43,6 +43,7 @@ def create_appinstance(environ):
         ###
         config = {
             'Search': {
+                'SearchIndexDir': '/Users/zarf/src/ifarch/ifarchive-search/indexdir',
                 'AppRoot': '/admintest',
                 'LogFile': '/Users/zarf/src/ifarch/ifarchive-search/out.log',
                 'TemplateDir': '/Users/zarf/src/ifarch/ifarchive-search/templates',
