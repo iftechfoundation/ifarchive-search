@@ -21,12 +21,31 @@
 
 <div class="FormBox">
 <form action="{{ approot }}" method="POST">
-<input class="FormField" type="text">
+<input class="FormField" type="text" value="{{ searchstring }}">
 <input class="FormButton" name="submit" type="submit" value="Search">
 </form>
 </div>
 
-<p>Searching!</p>
+<p>
+This form searches files stored on the <a href="/">IF Archive</a>.
+If you want to search for IF games by bibliographic information
+(author, year, platform, competitions or awards) we recommend you
+<a href="https://ifdb.org/search">search on IFDB</a>
+instead. This form is better for finding interpreters, development tools,
+articles, information, and specific files.
+</p>
+
+<h3>Search Tips</h3>
+
+<ul>
+<li><b>TERM</b>: Simple keyword search.
+<li><b>TERM1 TERM2</b>: Files with all of the given terms.
+<li><b>TERM1 or TERM2</b>: Files with <em>any</em> of the given terms.
+<li><b>date:2015</b>: Files uploaded in the given year.
+<li><b>date:Oct 2015</b>, <b>date:Oct 19 2015</b>, etc: Files uploaded in the given date. The date is parsed flexibly.
+<li><b>name:filename</b>: Files with the given exact filename.
+<li><b>tuid:ID</b>: Files tagged with the given TUID (IFDB ID string).
+</ul>
 
 </div>
 
