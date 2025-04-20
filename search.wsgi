@@ -22,8 +22,14 @@ class han_Home(ReqHandler):
             yield tem.render(approot=self.app.approot, searchstr=searchstr)
             return
 
-        tem = self.app.getjenv().get_template('result.html')
-        yield tem.render(approot=self.app.approot, searchstr=searchstr)
+        query = self.app.queryparser.parse(searchstr)
+        
+        with self.app.searchindex.searcher() as searcher:
+            results = searcher.search(query)
+            resultobjs = [ res.fields() for res in results ]
+
+            tem = self.app.getjenv().get_template('result.html')
+            yield tem.render(approot=self.app.approot, searchstr=searchstr, results=resultobjs)
             
 handlers = [
     ('', han_Home),

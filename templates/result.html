@@ -1,2 +1,17 @@
 {% extends "page.html" %}
 
+
+{% block content %}
+
+{% if not results %}
+<p>No files found.<p>
+{% else %}
+<ul>
+  {% for res in results %}
+  <li>{{ res.path }}
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
+

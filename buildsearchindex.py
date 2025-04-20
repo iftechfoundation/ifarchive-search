@@ -2,8 +2,6 @@ import datetime
 import re
 
 ### create vs rebuild
-### store in sqlite?
-### tuid
 
 # https://whoosh.readthedocs.io/en/latest/intro.html
 

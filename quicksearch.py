@@ -18,8 +18,8 @@ def dosearch(querytext):
         qparser.add_plugin(DateParserPlugin(free=True))
         try:
             query = qparser.parse(querytext)
-        except:
-            print('query parse failed')
+        except Exception as ex:
+            print('query parse failed (%s)' % (ex,))
             return
         results = searcher.search(query)
         if not len(results):
