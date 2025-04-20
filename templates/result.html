@@ -3,12 +3,19 @@
 
 {% block content %}
 
+{% if correctstr %}
+<p>(Did you mean: "{{ correctstr }}")</p>
+{% endif %}
+
 {% if not results %}
 <p>No files found.<p>
 {% else %}
+<p>{{ resultcount }} results:</p>
 <ul>
   {% for res in results %}
-  <li>{{ res.path }}
+  <li><a href="https://ifarchive.org/{{ res.path|urlencode }}">{{ res.path }}</a>
+  {% if res.type == 'dir' %} (directory) {% endif %}
+  {% if res.date %}({{ res.date }}){% endif %}
   {% endfor %}
 </ul>
 {% endif %}

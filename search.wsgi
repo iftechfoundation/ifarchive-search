@@ -32,10 +32,17 @@ class han_Home(ReqHandler):
         
         with self.app.searchindex.searcher() as searcher:
             results = searcher.search(query)
+            resultcount = len(results)
             resultobjs = [ res.fields() for res in results ]
+            ### log search
+
+            correctstr = None
+            corrected = searcher.correct_query(query, searchstr)
+            if corrected.query != query:
+                correctstr = corrected.string
 
             tem = self.app.getjenv().get_template('result.html')
-            yield tem.render(approot=self.app.approot, searchstr=searchstr, results=resultobjs)
+            yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount)
             
 handlers = [
     ('', han_Home),
