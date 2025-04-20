@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>IF Archive File Upload</title>
+<title>Search the IF Archive</title>
 <link href="/misc/icon-144.png" rel="apple-touch-icon" sizes="144x144" type="image/png">
 <link href="/misc/icon-64.png" rel="icon" sizes="64x64" type="image/png">
 <link href="/misc/icon-32.png" rel="icon" sizes="32x32" type="image/png">
@@ -11,7 +11,7 @@
 </head>
 
 <body class="SysMode">
-<div id="uploadpage" class="Page">
+<div id="searchpage" class="Page">
 
 <div class="Header">
 <h1>Search the IF Archive</h1>
@@ -19,10 +19,12 @@
 
 <div class="Description">
 
+<div class="FormBox">
 <form action="{{ approot }}" method="POST">
 <input class="FormField" type="text">
 <input class="FormButton" name="submit" type="submit" value="Search">
 </form>
+</div>
 
 <p>Searching!</p>
 
