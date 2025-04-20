@@ -22,7 +22,13 @@ class han_Home(ReqHandler):
             yield tem.render(approot=self.app.approot, searchstr=searchstr)
             return
 
-        query = self.app.queryparser.parse(searchstr)
+        try:
+            query = self.app.queryparser.parse(searchstr)
+        except Exception as ex:
+            ### log exception
+            tem = self.app.getjenv().get_template('help.html')
+            yield tem.render(approot=self.app.approot, searchstr=searchstr, message='Your search query could not be parsed.')
+            return
         
         with self.app.searchindex.searcher() as searcher:
             results = searcher.search(query)

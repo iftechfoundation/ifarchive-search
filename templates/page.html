@@ -26,6 +26,10 @@
 </form>
 </div>
 
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
+
 {% block content %}{% endblock %}
 
 </div>
