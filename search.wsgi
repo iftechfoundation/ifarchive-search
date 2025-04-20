@@ -56,8 +56,8 @@ class han_Home(ReqHandler):
             if corrected.query != query:
                 correctstr = corrected.string
 
-            tem = self.app.getjenv().get_template('result.html')
-            yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount)
+        tem = self.app.getjenv().get_template('result.html')
+        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount)
             
 handlers = [
     ('', han_Home),
