@@ -10,7 +10,8 @@ from searchlib.searchapp import SearchApp
 
 class han_Home(ReqHandler):
     def do_get(self, req):
-        yield 'HELLO\n'
+        tem = self.app.getjenv().get_template('search.html')
+        yield tem.render()
 
 handlers = [
     ('', han_Home),
@@ -42,7 +43,9 @@ def create_appinstance(environ):
         ###
         config = {
             'Search': {
-                'LogFile': '/Users/zarf/src/ifarch/ifarchive-search/out.log'
+                'AppRoot': '/admintest',
+                'LogFile': '/Users/zarf/src/ifarch/ifarchive-search/out.log',
+                'TemplateDir': '/Users/zarf/src/ifarch/ifarchive-search/templates',
             }
         }
         ###
