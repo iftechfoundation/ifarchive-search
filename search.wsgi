@@ -7,6 +7,7 @@ import threading
 
 from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
+from searchlib.util import filehash
 
 class han_Home(ReqHandler):
     def do_get(self, req):
@@ -33,8 +34,22 @@ class han_Home(ReqHandler):
         with self.app.searchindex.searcher() as searcher:
             results = searcher.search(query)
             resultcount = len(results)
-            resultobjs = [ res.fields() for res in results ]
+            
             ### log search
+            
+            resultobjs = []
+            for res in results:
+                obj = dict(res.fields())
+                if 'date' in obj:
+                    obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
+                if 'path' in obj:
+                    path = obj['path']
+                    if obj.get('type') == 'dir':
+                        obj['url'] = 'https://ifarchive.org/indexes/'+path
+                    else:
+                        dirname, _, filename = path.rpartition('/')
+                        obj['url'] = 'https://ifarchive.org/indexes/'+dirname+'#'+filehash(filename)
+                resultobjs.append(obj)
 
             correctstr = None
             corrected = searcher.correct_query(query, searchstr)
