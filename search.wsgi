@@ -10,9 +10,21 @@ from searchlib.searchapp import SearchApp
 
 class han_Home(ReqHandler):
     def do_get(self, req):
-        tem = self.app.getjenv().get_template('search.html')
+        tem = self.app.getjenv().get_template('help.html')
         yield tem.render(approot=self.app.approot)
+        
+    def do_post(self, req):
+        searchstr = req.get_input_field('searchstr', '')
+        searchstr = searchstr.strip()
 
+        if not searchstr:
+            tem = self.app.getjenv().get_template('help.html')
+            yield tem.render(approot=self.app.approot, searchstr=searchstr)
+            return
+
+        tem = self.app.getjenv().get_template('result.html')
+        yield tem.render(approot=self.app.approot, searchstr=searchstr)
+            
 handlers = [
     ('', han_Home),
 ]
