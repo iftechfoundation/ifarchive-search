@@ -28,7 +28,7 @@ schema = Schema(
     tuid=KEYWORD,
     )
 
-index = create_in('indexdir', schema)
+index = create_in('searchindex', schema)
 ### or don't, if we want to reindex from scratch without interrupting existing readers. (mergetype=writing.CLEAR)
 
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
