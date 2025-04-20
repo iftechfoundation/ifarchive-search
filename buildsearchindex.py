@@ -5,6 +5,8 @@ import re
 ### store in sqlite?
 ### tuid
 
+# https://whoosh.readthedocs.io/en/latest/intro.html
+
 from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID, KEYWORD, DATETIME, NUMERIC, STORED
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
