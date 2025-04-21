@@ -16,19 +16,22 @@
 {% if not results %}
 <p>No files found.<p>
 {% else %}
+
 {% if prevavail or nextavail %}
   <p>Showing results {{ showmin }}-{{ showmax }} of {{ resultcount }}:</p>
 {% else %}
   <p>Found {{ resultcount }} results:</p>
 {% endif %}
+
 <dl class="Results">
   {% for res in results %}
-  <dt><a href="{{ res.url }}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a></dt>
-  {% if res.isdir %}<dd>(directory)</dd>{% endif %}
-  {% if res.datestr %}<dd>({{ res.datestr }})</dd>{% endif %}
-  {% if res.shortdesc %}<dd class="ShortDesc">{{ res.shortdesc }}{% endif %}
+    <dt><a href="{{ res.url }}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a></dt>
+    {% if res.isdir %}<dd>(directory)</dd>{% endif %}
+    {% if res.datestr %}<dd>({{ res.datestr }})</dd>{% endif %}
+    {% if res.shortdesc %}<dd class="ShortDesc">{{ res.shortdesc }}{% endif %}
   {% endfor %}
 </dl>
+
 {% endif %}
 
 {% if prevavail or nextavail %}
