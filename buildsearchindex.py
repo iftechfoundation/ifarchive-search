@@ -16,9 +16,12 @@ import ifarchivexml
 # Analyzer that does case-folding, stopwords, stemming, and accent-folding
 analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
 
+SHORTDESC = 300
+
 schema = Schema(
     type=STORED,
     description=TEXT(analyzer=analyzer),
+    shortdesc=STORED,
     name=ID,
     path=ID(stored=True),
     dir=KEYWORD,
@@ -26,9 +29,6 @@ schema = Schema(
     size=NUMERIC,
     tuid=KEYWORD,
     )
-
-index = create_in('searchindex', schema)
-### or don't, if we want to reindex from scratch without interrupting existing readers. (mergetype=writing.CLEAR)
 
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
 
@@ -49,9 +49,13 @@ def builddesc(obj, all=True):
     
     return '\n'.join(alldesc)
 
-itemcount = 0
+index = create_in('searchindex', schema)
+### or don't, if we want to reindex from scratch without interrupting existing readers. (mergetype=writing.CLEAR)
 
 writer = index.writer()
+
+itemcount = 0
+descmap = {}
 
 for dir in dirs.values():
     if dir.name == 'if-archive':
@@ -67,6 +71,12 @@ for dir in dirs.values():
 
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
+
+    shortdesc = builddesc(dir, all=False)
+    if shortdesc:
+        shortdesc = shortdesc.strip()
+    if shortdesc:
+        descmap[dir.name] = shortdesc
         
     tuids = None
     if dir.metadata and 'tuid' in dir.metadata:
@@ -78,6 +88,7 @@ for dir in dirs.values():
         dir = dirstr,
         type = 'dir',
         description = alldesc,
+        shortdesc = shortdesc,
         tuid = tuids,
     )
     itemcount += 1
@@ -98,6 +109,14 @@ for file in files.values():
 
     alldesc = builddesc(file)
     
+    shortdesc = builddesc(file, all=False)
+    if shortdesc:
+        shortdesc = shortdesc.strip()
+    if shortdesc:
+        if len(shortdesc) > SHORTDESC:
+            shortdesc = shortdesc[ 0 : SHORTDESC ] + '...'
+        descmap[file.path] = shortdesc
+        
     tuids = None
     if file.metadata and 'tuid' in file.metadata:
         tuids = ' '.join(file.metadata['tuid'])
@@ -108,6 +127,7 @@ for file in files.values():
         dir = dirstr,
         type = 'file',
         description = alldesc,
+        shortdesc = shortdesc or descmap.get(file.directory, None),
         date = date,
         size = file.size,
         tuid = tuids,
