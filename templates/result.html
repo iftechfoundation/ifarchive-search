@@ -4,7 +4,13 @@
 {% block content %}
 
 {% if correctstr %}
-<p>(Did you mean: <span class="ExampleTerm">{{ correctstr }}</span>)</p>
+<div class="Paragraph">
+  (Did you mean: <span class="ExampleTerm">{{ correctstr }}</span> ?
+  <form class="Inline" action="{{ approot }}" method="POST">
+    <input type="hidden" name="searchstr" value="{{ correctstr }}">
+    <input class="FormButton" name="trycorrect" type="submit" value="Try it">)
+  </form>
+</div>
 {% endif %}
 
 {% if not results %}
