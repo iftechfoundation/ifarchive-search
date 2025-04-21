@@ -32,11 +32,13 @@ index = create_in('searchindex', schema)
 
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
 
-def builddesc(obj):
+def builddesc(obj, all=True):
     alldesc = []
     if obj.description:
         alldesc.append(obj.description)
     for desc in obj.parentdescs.values():
+        if alldesc and not all:
+            break
         if desc:
             alldesc.append(desc)
         
@@ -57,11 +59,11 @@ for dir in dirs.values():
         continue
     
     dirstr = None
-    dirs = dir.name.split('/')
-    if dirs and dirs[0] == 'if-archive':
-        del dirs[0]
-    if dirs:
-        dirstr = ' '.join(dirs)
+    dls = dir.name.split('/')
+    if dls and dls[0] == 'if-archive':
+        del dls[0]
+    if dls:
+        dirstr = ' '.join(dls)
 
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
@@ -88,11 +90,11 @@ for file in files.values():
         date = datetime.datetime.fromtimestamp(file.rawdate)
 
     dirstr = None
-    dirs = file.directory.split('/')
-    if dirs and dirs[0] == 'if-archive':
-        del dirs[0]
-    if dirs:
-        dirstr = ' '.join(dirs)
+    dls = file.directory.split('/')
+    if dls and dls[0] == 'if-archive':
+        del dls[0]
+    if dls:
+        dirstr = ' '.join(dls)
 
     alldesc = builddesc(file)
     
