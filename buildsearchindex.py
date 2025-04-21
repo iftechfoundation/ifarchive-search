@@ -18,16 +18,24 @@ analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
 
 SHORTDESC = 300
 
+# STORED fields are returned as part of the result object; they are not
+#   indexed (not searchable).
+# stored=True fields are returned as part of the result object, but they
+#   *are* searchable.
+# KEYWORD fields are searchable lists.
+# The "description" field gets fancy full-text searchability, including
+#   stemming, accent-folding, etc.
+
 schema = Schema(
-    type=STORED,
-    description=TEXT(analyzer=analyzer),
-    shortdesc=STORED,
-    name=ID,
-    path=ID(stored=True),
-    dir=KEYWORD,
+    type=STORED,           # "file" or "dir"
+    description=TEXT(analyzer=analyzer),   # the primary search text
+    shortdesc=STORED,      # snippet of the description; displayed not indexed
+    name=ID,               # bare filename
+    path=ID(stored=True),  # full path
+    dir=KEYWORD(commas=True),  # directory segments, comma-separated list
     date=DATETIME(stored=True),
-    size=NUMERIC,
-    tuid=KEYWORD,
+    size=NUMERIC,          # in bytes
+    tuid=KEYWORD,          # tuids, space-separated list
     )
 
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
@@ -78,7 +86,7 @@ for dir in dirs.values():
     if dls and dls[0] == 'if-archive':
         del dls[0]
     if dls:
-        dirstr = ' '.join(dls)
+        dirstr = ','.join(dls)
 
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
@@ -116,7 +124,7 @@ for file in files.values():
     if dls and dls[0] == 'if-archive':
         del dls[0]
     if dls:
-        dirstr = ' '.join(dls)
+        dirstr = ','.join(dls)
 
     alldesc = builddesc(file)
     
