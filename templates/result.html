@@ -25,16 +25,19 @@
 {% endif %}
 
 {% if prevavail or nextavail %}
-<form action="{{ approot }}" method="POST">
-<input type="hidden" name="searchstr" value="{{ searchstr }}">
-<input type="hidden" name="pagenum" value="{{ pagenum-1 }}">
-<input class="FormButton" name="prevpage" type="submit" {% if not prevavail %}disabled{% endif %} value="Prev">
-</form>
-<form action="{{ approot }}" method="POST">
-<input type="hidden" name="searchstr" value="{{ searchstr }}">
-<input type="hidden" name="pagenum" value="{{ pagenum+1 }}">
-<input class="FormButton" name="nextpage" type="submit"{% if not nextavail %}disabled{% endif %} value="Next">
-</form>
+<div class="PageControlBox">
+  <form class="Inline" action="{{ approot }}" method="POST">
+    <input type="hidden" name="searchstr" value="{{ searchstr }}">
+    <input type="hidden" name="pagenum" value="{{ pagenum-1 }}">
+    <input class="FormButton" name="prevpage" type="submit" {% if not prevavail %}disabled{% endif %} value="&#x2190; Prev">
+  </form>
+  <span>Page {{ pagenum }} of {{ pagecount }}</span>
+  <form class="Inline" action="{{ approot }}" method="POST">
+    <input type="hidden" name="searchstr" value="{{ searchstr }}">
+    <input type="hidden" name="pagenum" value="{{ pagenum+1 }}">
+    <input class="FormButton" name="nextpage" type="submit"{% if not nextavail %}disabled{% endif %} value="Next &#x2192;">
+  </form>
+</div>
 {% endif %}
 
 {% endblock %}

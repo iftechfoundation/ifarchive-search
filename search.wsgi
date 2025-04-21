@@ -76,13 +76,14 @@ class han_Home(ReqHandler):
             result = res = None
             # end of searcher scope
 
+        pagecount = ((resultcount+PAGELEN-1) // PAGELEN)
         prevavail = (pagenum > 1)
-        nextavail = (pagenum < ((resultcount+PAGELEN-1) // PAGELEN))
+        nextavail = (pagenum < pagecount)
         showmin = (pagenum-1) * PAGELEN + 1
         showmax = min(showmin+PAGELEN-1, resultcount)
                 
         tem = self.app.getjenv().get_template('result.html')
-        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum, prevavail=prevavail, nextavail=nextavail, showmin=showmin, showmax=showmax)
+        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum, pagecount=pagecount, prevavail=prevavail, nextavail=nextavail, showmin=showmin, showmax=showmax)
             
 handlers = [
     ('', han_Home),
