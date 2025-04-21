@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 
+"""
+Search: Web app for IF Archive search
+
+See tinyapp/app.py for how the underlying web app framework works.
+
+This file (search.wsgi) is installed as /var/ifarchive/wsgi-bin/search.wsgi.
+It can also be run to perform some command-line operations:
+
+  python3 /var/ifarchive/wsgi-bin/search.wsgi
+"""
+
 import sys
 import os
 import logging, logging.handlers
@@ -9,6 +20,7 @@ from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
 from searchlib.util import filehash
 
+# Number of results per page.
 PAGELEN = 10
 
 class han_Home(ReqHandler):
@@ -86,7 +98,8 @@ class han_Home(ReqHandler):
                 
         tem = self.app.getjenv().get_template('result.html')
         yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum, pagecount=pagecount, prevavail=prevavail, nextavail=nextavail, showmin=showmin, showmax=showmax)
-            
+
+# We only have one handler.
 handlers = [
     ('', han_Home),
 ]

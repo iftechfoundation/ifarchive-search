@@ -2,6 +2,8 @@ import argparse
 import os, os.path
 
 def run(appinstance):
+    """The entry point when search.wsgi is invoked on the command line.
+    """
     popt = argparse.ArgumentParser(prog='search.wsgi')
     subopt = popt.add_subparsers(dest='cmd', title='commands')
     
