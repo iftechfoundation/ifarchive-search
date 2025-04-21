@@ -9,6 +9,8 @@ from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
 from searchlib.util import filehash
 
+PAGELEN = 10
+
 class han_Home(ReqHandler):
     def do_get(self, req):
         tem = self.app.getjenv().get_template('help.html')
@@ -38,7 +40,7 @@ class han_Home(ReqHandler):
             return
         
         with self.app.searchindex.searcher() as searcher:
-            results = searcher.search_page(query, pagenum)
+            results = searcher.search_page(query, pagenum, pagelen=PAGELEN)
             resultcount = len(results)
             
             ### log search
@@ -62,8 +64,13 @@ class han_Home(ReqHandler):
             if corrected.query != query:
                 correctstr = corrected.string
 
+        prevavail = (pagenum > 1)
+        nextavail = (pagenum < ((resultcount+PAGELEN-1) // PAGELEN))
+        showmin = (pagenum-1) * PAGELEN + 1
+        showmax = min(showmin+PAGELEN-1, resultcount)
+                
         tem = self.app.getjenv().get_template('result.html')
-        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum)
+        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum, prevavail=prevavail, nextavail=nextavail, showmin=showmin, showmax=showmax)
             
 handlers = [
     ('', han_Home),

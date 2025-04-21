@@ -10,7 +10,7 @@
 {% if not results %}
 <p>No files found.<p>
 {% else %}
-<p>{{ resultcount }} results:</p>
+<p>Showing results {{ showmin }}-{{ showmax }} of {{ resultcount }}:</p>
 <ul>
   {% for res in results %}
   <li><a href="{{ res.url }}">{{ res.path }}</a>
@@ -20,16 +20,18 @@
 </ul>
 {% endif %}
 
+{% if prevavail or nextavail %}
 <form action="{{ approot }}" method="POST">
 <input type="hidden" name="searchstr" value="{{ searchstr }}">
 <input type="hidden" name="pagenum" value="{{ pagenum-1 }}">
-<input class="FormButton" name="prevpage" type="submit" value="Prev">
+<input class="FormButton" name="prevpage" type="submit" {% if not prevavail %}disabled{% endif %} value="Prev">
 </form>
 <form action="{{ approot }}" method="POST">
 <input type="hidden" name="searchstr" value="{{ searchstr }}">
 <input type="hidden" name="pagenum" value="{{ pagenum+1 }}">
-<input class="FormButton" name="nextpage" type="submit" value="Next">
+<input class="FormButton" name="nextpage" type="submit"{% if not nextavail %}disabled{% endif %} value="Next">
 </form>
+{% endif %}
 
 {% endblock %}
 
