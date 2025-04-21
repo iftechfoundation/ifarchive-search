@@ -20,7 +20,7 @@
 {% if prevavail or nextavail %}
   <p>Showing results {{ showmin }}-{{ showmax }} of {{ resultcount }}:</p>
 {% else %}
-  <p>Found {{ resultcount }} results:</p>
+  <p>Found {{ resultcount }} result{% if resultcount != 1 %}s{% endif %}:</p>
 {% endif %}
 
 <dl class="Results">
