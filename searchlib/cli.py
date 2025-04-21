@@ -62,7 +62,7 @@ def cmd_search(args, app):
                 val = '(%s)' % (fields['type'],)
             print('* %s  %s' % (fields['path'], val,))
             if 'shortdesc' in fields:
-                print(fields['shortdesc'])
+                print(fields['shortdesc'].replace('\n', ' '))
             print()
     
     
