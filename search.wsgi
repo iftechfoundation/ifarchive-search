@@ -39,7 +39,7 @@ class han_Home(ReqHandler):
             yield tem.render(approot=self.app.approot, searchstr=searchstr, message='Your search query could not be parsed.')
             return
         
-        with self.app.searchindex.searcher() as searcher:
+        with self.app.getsearcher() as searcher:
             results = searcher.search_page(query, pagenum, pagelen=PAGELEN)
             resultcount = len(results)
             
@@ -48,6 +48,8 @@ class han_Home(ReqHandler):
             resultobjs = []
             for res in results:
                 obj = dict(res.fields())
+                if obj.get('type') == 'dir':
+                    obj['isdir'] = True
                 if 'date' in obj:
                     obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
                 if 'path' in obj:
@@ -69,6 +71,8 @@ class han_Home(ReqHandler):
             corrected = searcher.correct_query(query, searchstr)
             if corrected.query != query:
                 correctstr = corrected.string
+
+            # end of searcher scope
 
         prevavail = (pagenum > 1)
         nextavail = (pagenum < ((resultcount+PAGELEN-1) // PAGELEN))

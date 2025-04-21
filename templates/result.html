@@ -17,8 +17,8 @@
 {% endif %}
 <dl class="Results">
   {% for res in results %}
-  <dt><a href="{{ res.url }}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b></a></dt>
-  {% if res.type == 'dir' %}<dd>(directory)</dd>{% endif %}
+  <dt><a href="{{ res.url }}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a></dt>
+  {% if res.isdir %}<dd>(directory)</dd>{% endif %}
   {% if res.datestr %}<dd>({{ res.datestr }})</dd>{% endif %}
   {% endfor %}
 </dl>
