@@ -13,6 +13,7 @@ It can also be run to perform some command-line operations:
 
 import sys
 import os
+import configparser
 import logging, logging.handlers
 import threading
 
@@ -127,17 +128,18 @@ def create_appinstance(environ):
             # Another thread did all the work while we were grabbing the lock!
             return
 
-        ###
-        config = {
-            'Search': {
-                'SearchIndexDir': '/Users/zarf/src/ifarch/ifarchive-search/searchindex',
-                'AppRoot': '/search',
-                'LogFile': '/Users/zarf/src/ifarch/ifarchive-search/out.log',
-                'TemplateDir': '/Users/zarf/src/ifarch/ifarchive-search/templates',
-            }
-        }
-        ###
-    
+        # The config file contains all the paths and settings used by the app.
+        # The location is specified by the IFARCHIVE_CONFIG env var (if
+        # on the command line) or the "SetEnv IFARCHIVE_CONFIG" line (in the
+        # Apache WSGI environment).
+        configpath = '/var/ifarchive/lib/ifarch.config'
+        configpath = environ.get('IFARCHIVE_CONFIG', configpath)
+        if not os.path.isfile(configpath):
+            raise Exception('Config file not found: ' + configpath)
+        
+        config = configparser.ConfigParser()
+        config.read(configpath)
+        
         # Set up the logging configuration.
         # (WatchedFileHandler allows logrotate to rotate the file out from
         # under it.)
