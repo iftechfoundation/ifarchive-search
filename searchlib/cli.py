@@ -33,7 +33,12 @@ def cmd_search(args, app):
     with app.getsearcher() as searcher:
         pagelen = args.limit or app.pagelen
         results = searcher.search_page(query, args.page, pagelen=pagelen)
-        
+        resultcount = len(results)
+
+        pagecount = ((resultcount+pagelen-1) // pagelen)
+        showmin = (args.page-1) * pagelen + 1
+        showmax = min(showmin+pagelen-1, resultcount)
+
         corrected = searcher.correct_query(query, args.query)
         if corrected.query != query:
             print('Did you mean: "%s"' % (corrected.string,))
@@ -42,7 +47,11 @@ def cmd_search(args, app):
             print('No results')
             return
 
-        print('%d results in %.04f sec:' % (len(results), results.results.runtime,))
+        if resultcount > pagelen:
+            val = 'page %d (%d-%d) of ' % (args.page, showmin, showmax,)
+        else:
+            val = ''
+        print('Showing %s%d results in %.04f sec:' % (val, len(results), results.results.runtime,))
         print()
         
         for res in results:
