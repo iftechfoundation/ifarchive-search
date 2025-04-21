@@ -20,8 +20,6 @@ class han_Home(ReqHandler):
         searchstr = req.get_input_field('searchstr', '')
         searchstr = searchstr.strip()
 
-        remoteip = req.env.get('REMOTE_ADDR', '???')
-
         try:
             pagenum = int(req.get_input_field('pagenum', 1))
             pagenum = max(1, pagenum)
@@ -36,7 +34,7 @@ class han_Home(ReqHandler):
         try:
             query = self.app.queryparser.parse(searchstr)
         except Exception as ex:
-            ### log exception
+            req.logwarning('search "%s" failed (%s)', searchstr, ex)
             tem = self.app.getjenv().get_template('help.html')
             yield tem.render(approot=self.app.approot, searchstr=searchstr, message='Your search query could not be parsed.')
             return
@@ -46,7 +44,7 @@ class han_Home(ReqHandler):
             resultcount = len(results)
             runtime = results.results.runtime
             
-            req.loginfo('%s: search "%s" (%d results, %.04f time)', remoteip, searchstr, resultcount, runtime)
+            req.loginfo('search "%s" (%d results, %.04f sec)', searchstr, resultcount, runtime)
             
             resultobjs = []
             for res in results:
