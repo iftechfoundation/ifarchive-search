@@ -47,15 +47,12 @@ class SearchApp(TinyApp):
         return jenv
 
     def getsearcher(self):
-        """Get or create a Whoosh searcher. These are cached per-thread.
+        """Create and return a Whoosh searcher.
+        I could cache these (per thread), but they hold both cached data
+        and open file handles. I wouldn't want to keep them alive indefinitely.
+        Maybe if there was a timeout to close and discard them?
+        (Note: if we go down this road, adjust the caller to *not* close
+        the searcher after use.)
         """
-        searcher = getattr(self.threadcache, 'searcher', None)
-        if searcher is None:
-            # Create a new one
-            searcher = self.searchindex.searcher()
-        else:
-            # Refresh it if the index files have changed
-            searcher = searcher.refresh()
-        # Either way, it's new (or might be) so we re-cache it
-        self.threadcache.searcher = searcher
+        searcher = self.searchindex.searcher()
         return searcher
