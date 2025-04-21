@@ -10,6 +10,7 @@ def run(appinstance):
     popt_search = subopt.add_parser('search', help='perform a search')
     popt_search.set_defaults(cmdfunc=cmd_search)
     popt_search.add_argument('query')
+    popt_search.add_argument('-l', '--limit', type=int, default=0)
     popt_search.add_argument('-p', '--page', type=int, default=1)
 
     args = popt.parse_args()
@@ -30,7 +31,7 @@ def cmd_search(args, app):
         return
     
     with app.getsearcher() as searcher:
-        pagelen = app.pagelen
+        pagelen = args.limit or app.pagelen
         results = searcher.search_page(query, args.page, pagelen=pagelen)
         
         corrected = searcher.correct_query(query, args.query)
