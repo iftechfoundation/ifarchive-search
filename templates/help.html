@@ -6,7 +6,7 @@
 
 <ul>
 <li><span class="ExampleTerm">zork</span> &#x2014; Simple keyword search of the Archive description text.
-<li><span class="ExampleTerm">"zork iii"</span> &#x2014; Files with the given phrase.
+<li><span class="ExampleOp">"</span><span class="ExampleTerm">zork iii</span><span class="ExampleOp">"</span> &#x2014; Files with the given phrase.
 <li><span class="ExampleTerm">zork mit</span> &#x2014; Files with all of the given terms.
 <li><span class="ExampleTerm">zork</span> <span class="ExampleOp">OR</span> <span class="ExampleTerm">mit</span> &#x2014; Files with <em>any</em> of the given terms. (The <span class="ExampleOp">OR</span> must be capitalized.)
 <li><span class="ExampleTerm">zork</span> <span class="ExampleOp">NOT</span> <span class="ExampleTerm">mit</span> &#x2014; Files with one term but excluding another.
@@ -15,6 +15,11 @@
 <li><span class="ExampleOp">name:</span><span class="ExampleTerm">wumpus.bas</span> &#x2014; Files with the given exact filename.
 <li><span class="ExampleOp">tuid:</span><span class="ExampleTerm">9p8kh3im2j9h2881</span> &#x2014; Files tagged with the given TUID (IFDB ID string).
 </ul>
+
+<p>
+See <a href="https://whoosh.readthedocs.io/en/latest/querylang.html">the Whoosh query language</a> for more.
+(Archive search is powered by the <a href="https://whoosh.readthedocs.io/en/latest/quickstart.html">Whoosh</a> query engine.)
+</p>
 
 <p>
 This form searches files stored on the <a href="/">IF Archive</a>.
