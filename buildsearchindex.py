@@ -33,6 +33,17 @@ schema = Schema(
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
 
 def builddesc(obj, all=True):
+    """Pull out the description from a file or directory. This is Markdown,
+    but it will be searched or displayed as-is. (Except that we discard
+    Markdown links -- those are not interesting for either searching or
+    displaying.)
+
+    We include all parentdescs, because they may have useful search terms,
+    especially if the local description is empty.
+
+    If all is False, we only return *one* description: the local one or
+    the first parentdesc found.
+    """
     alldesc = []
     if obj.description:
         alldesc.append(obj.description)
@@ -116,6 +127,7 @@ for file in files.values():
         if len(shortdesc) > SHORTDESC:
             shortdesc = shortdesc[ 0 : SHORTDESC ] + '...'
     if not shortdesc:
+        # I suppose we could walk up the tree until we find a description.
         shortdesc = dirdescmap.get(file.directory, None)
         
     tuids = None
