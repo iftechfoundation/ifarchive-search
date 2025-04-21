@@ -55,7 +55,7 @@ index = create_in('searchindex', schema)
 writer = index.writer()
 
 itemcount = 0
-descmap = {}
+dirdescmap = {}
 
 for dir in dirs.values():
     if dir.name == 'if-archive':
@@ -76,7 +76,7 @@ for dir in dirs.values():
     if shortdesc:
         shortdesc = shortdesc.strip()
     if shortdesc:
-        descmap[dir.name] = shortdesc
+        dirdescmap[dir.name] = shortdesc
         
     tuids = None
     if dir.metadata and 'tuid' in dir.metadata:
@@ -115,7 +115,8 @@ for file in files.values():
     if shortdesc:
         if len(shortdesc) > SHORTDESC:
             shortdesc = shortdesc[ 0 : SHORTDESC ] + '...'
-        descmap[file.path] = shortdesc
+    if not shortdesc:
+        shortdesc = dirdescmap.get(file.directory, None)
         
     tuids = None
     if file.metadata and 'tuid' in file.metadata:
@@ -127,7 +128,7 @@ for file in files.values():
         dir = dirstr,
         type = 'file',
         description = alldesc,
-        shortdesc = shortdesc or descmap.get(file.directory, None),
+        shortdesc = shortdesc,
         date = date,
         size = file.size,
         tuid = tuids,
