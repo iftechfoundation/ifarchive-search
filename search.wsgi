@@ -20,6 +20,8 @@ class han_Home(ReqHandler):
         searchstr = req.get_input_field('searchstr', '')
         searchstr = searchstr.strip()
 
+        remoteip = req.env.get('REMOTE_ADDR', '???')
+
         try:
             pagenum = int(req.get_input_field('pagenum', 1))
             pagenum = max(1, pagenum)
@@ -42,8 +44,9 @@ class han_Home(ReqHandler):
         with self.app.getsearcher() as searcher:
             results = searcher.search_page(query, pagenum, pagelen=PAGELEN)
             resultcount = len(results)
+            runtime = results.results.runtime
             
-            ### log search
+            req.loginfo('%s: search "%s" (%d results, %.04f time)', remoteip, searchstr, resultcount, runtime)
             
             resultobjs = []
             for res in results:
@@ -72,6 +75,7 @@ class han_Home(ReqHandler):
             if corrected.query != query:
                 correctstr = corrected.string
 
+            result = res = None
             # end of searcher scope
 
         prevavail = (pagenum > 1)
