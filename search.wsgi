@@ -61,11 +61,13 @@ class han_Home(ReqHandler):
                     pathhead, _, pathtail = spath.rpartition('/')
                     obj['pathhead'] = pathhead
                     obj['pathtail'] = pathtail
+                    # We don't include the server for annoying urlencode reasons
                     if obj.get('type') == 'dir':
-                        obj['url'] = 'https://ifarchive.org/indexes/'+path
+                        obj['url'] = 'indexes/'+path
                     else:
                         dirname, _, filename = path.rpartition('/')
-                        obj['url'] = 'https://ifarchive.org/indexes/'+dirname+'#'+filehash(filename)
+                        obj['url'] = 'indexes/'+dirname
+                        obj['urlfrag'] = filehash(filename)
                 resultobjs.append(obj)
 
             correctstr = None
