@@ -17,6 +17,7 @@ class SearchApp(TinyApp):
     def __init__(self, config, hanclasses):
         TinyApp.__init__(self, hanclasses)
 
+        self.masterindexpath = config['Search']['MasterIndexXML']
         self.searchindexdir = config['Search']['SearchIndexDir']
         self.approot = config['Search']['AppRoot']
         self.template_path = config['Search']['TemplateDir']
