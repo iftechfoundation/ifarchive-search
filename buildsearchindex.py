@@ -51,6 +51,10 @@ itemcount = 0
 writer = index.writer()
 
 for dir in dirs.values():
+    if dir.name == 'if-archive':
+        # skip the root
+        continue
+    
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
         

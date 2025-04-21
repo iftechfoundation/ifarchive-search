@@ -52,6 +52,12 @@ class han_Home(ReqHandler):
                     obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
                 if 'path' in obj:
                     path = obj['path']
+                    spath = path
+                    if spath.startswith('if-archive/'):
+                        spath = spath[ 11 : ]
+                    pathhead, _, pathtail = spath.rpartition('/')
+                    obj['pathhead'] = pathhead
+                    obj['pathtail'] = pathtail
                     if obj.get('type') == 'dir':
                         obj['url'] = 'https://ifarchive.org/indexes/'+path
                     else:
