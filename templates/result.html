@@ -10,7 +10,11 @@
 {% if not results %}
 <p>No files found.<p>
 {% else %}
-<p>Showing results {{ showmin }}-{{ showmax }} of {{ resultcount }}:</p>
+{% if prevavail or nextavail %}
+  <p>Showing results {{ showmin }}-{{ showmax }} of {{ resultcount }}:</p>
+{% else %}
+  <p>Found {{ resultcount }} results:</p>
+{% endif %}
 <ul>
   {% for res in results %}
   <li><a href="{{ res.url }}">{{ res.path }}</a>
