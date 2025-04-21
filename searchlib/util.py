@@ -17,7 +17,7 @@ def filehash(val):
     
 pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
 def buildmddesc(obj, all=True):
-    """Pull out the description from a file or directory object, as
+    """Pull out the description from an IFDir or IFFile object, as
     loaded from Master-Index.xml.
 
     (This is used when building the search index.)

@@ -7,6 +7,10 @@ def run(appinstance):
     popt = argparse.ArgumentParser(prog='search.wsgi')
     subopt = popt.add_subparsers(dest='cmd', title='commands')
 
+    popt_build = subopt.add_parser('build', help='build the search index')
+    popt_build.set_defaults(cmdfunc=cmd_build)
+    popt_build.add_argument('--create', type=bool, default=False)
+    
     popt_search = subopt.add_parser('search', help='perform a search')
     popt_search.set_defaults(cmdfunc=cmd_search)
     popt_search.add_argument('query')
@@ -21,6 +25,17 @@ def run(appinstance):
 
     args.cmdfunc(args, appinstance)
 
+def cmd_build(args, app):
+    """Build or rebuild the search index.
+    This reads Master-Index.xml and rebuilds the search index. It
+    cleans out and replaces all the existing entries.
+    
+    Use --create if you are creating a completely new search index.
+    You probably only need to do this if the schema changes. Restart
+    httpd after using this option.
+    """
+    pass
+    
 def cmd_search(args, app):
     """Perform a search and display the result(s).
     """
