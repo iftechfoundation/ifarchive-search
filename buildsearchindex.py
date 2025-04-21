@@ -21,6 +21,7 @@ schema = Schema(
     description=TEXT(analyzer=analyzer),
     name=ID,
     path=ID(stored=True),
+    dir=KEYWORD,
     date=DATETIME(stored=True),
     size=NUMERIC,
     tuid=KEYWORD,
@@ -55,6 +56,13 @@ for dir in dirs.values():
         # skip the root
         continue
     
+    dirstr = None
+    dirs = dir.name.split('/')
+    if dirs and dirs[0] == 'if-archive':
+        del dirs[0]
+    if dirs:
+        dirstr = ' '.join(dirs)
+
     _, _, name = dir.name.rpartition('/')
     alldesc = builddesc(dir)
         
@@ -65,6 +73,7 @@ for dir in dirs.values():
     writer.add_document(
         path = dir.name,
         name = name,
+        dir = dirstr,
         type = 'dir',
         description = alldesc,
         tuid = tuids,
@@ -78,6 +87,13 @@ for file in files.values():
     if file.rawdate is not None:
         date = datetime.datetime.fromtimestamp(file.rawdate)
 
+    dirstr = None
+    dirs = file.directory.split('/')
+    if dirs and dirs[0] == 'if-archive':
+        del dirs[0]
+    if dirs:
+        dirstr = ' '.join(dirs)
+
     alldesc = builddesc(file)
     
     tuids = None
@@ -87,6 +103,7 @@ for file in files.values():
     writer.add_document(
         path = file.path,
         name = file.name,
+        dir = dirstr,
         type = 'file',
         description = alldesc,
         date = date,
