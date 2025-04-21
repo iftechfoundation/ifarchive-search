@@ -15,3 +15,36 @@ def filehash(val):
     """
     return filehash_pattern.sub(filehash_escaper, val)
     
+pat_markdownlink = re.compile('\\[([^\\]]*)\\]\\([^)]*\\)')
+def buildmddesc(obj, all=True):
+    """Pull out the description from a file or directory object, as
+    loaded from Master-Index.xml.
+
+    (This is used when building the search index.)
+
+    The description is Markdown, but it will be searched or displayed
+    as-is. (Except that we discard Markdown links -- those are not
+    interesting for either searching or displaying.)
+
+    We include all parentdescs, because they may have useful search terms,
+    especially if the local description is empty.
+
+    If all is False, we only return *one* description: the local one or
+    the first parentdesc found.
+    """
+    alldesc = []
+    if obj.description:
+        alldesc.append(obj.description)
+    for desc in obj.parentdescs.values():
+        if alldesc and not all:
+            break
+        if desc:
+            alldesc.append(desc)
+        
+    if not alldesc:
+        return None
+
+    alldesc = [ pat_markdownlink.sub('\\1', val) for val in alldesc ]
+    
+    return '\n'.join(alldesc)
+
