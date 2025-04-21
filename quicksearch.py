@@ -25,7 +25,7 @@ def dosearch(querytext):
         if not len(results):
             print('no results')
         else:
-            print(len(results), 'results:')
+            print('%d results in %.04f sec:' % (len(results), results.runtime,))
         for res in results:
             fields = res.fields()
             if 'date' in fields:
@@ -33,6 +33,9 @@ def dosearch(querytext):
             else:
                 val = '(%s)' % (fields['type'],)
             print(fields['path'], val)
+            if 'shortdesc' in fields:
+                print(fields['shortdesc'])
+            print()
         corrected = searcher.correct_query(query, querytext)
         if corrected.query != query:
             print("Did you mean:", corrected.string)
