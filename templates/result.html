@@ -26,6 +26,7 @@
   <dt><a href="{{ res.url }}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a></dt>
   {% if res.isdir %}<dd>(directory)</dd>{% endif %}
   {% if res.datestr %}<dd>({{ res.datestr }})</dd>{% endif %}
+  {% if res.shortdesc %}<dd class="ShortDesc">{{ res.shortdesc }}{% endif %}
   {% endfor %}
 </dl>
 {% endif %}
