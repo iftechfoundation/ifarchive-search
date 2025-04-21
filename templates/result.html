@@ -15,13 +15,13 @@
 {% else %}
   <p>Found {{ resultcount }} results:</p>
 {% endif %}
-<ul>
+<dl class="Results">
   {% for res in results %}
-  <li><a href="{{ res.url }}">{{ res.path }}</a>
-  {% if res.type == 'dir' %} (directory) {% endif %}
-  {% if res.datestr %}({{ res.datestr }}){% endif %}
+  <dt><a href="{{ res.url }}">{{ res.path }}</a></dt>
+  {% if res.type == 'dir' %}<dd>(directory)</dd>{% endif %}
+  {% if res.datestr %}<dd>({{ res.datestr }})</dd>{% endif %}
   {% endfor %}
-</ul>
+</dl>
 {% endif %}
 
 {% if prevavail or nextavail %}
