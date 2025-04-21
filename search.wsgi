@@ -18,6 +18,12 @@ class han_Home(ReqHandler):
         searchstr = req.get_input_field('searchstr', '')
         searchstr = searchstr.strip()
 
+        try:
+            pagenum = int(req.get_input_field('pagenum', 1))
+            pagenum = max(1, pagenum)
+        except:
+            pagenum = 1
+
         if not searchstr:
             tem = self.app.getjenv().get_template('help.html')
             yield tem.render(approot=self.app.approot, searchstr=searchstr)
@@ -32,7 +38,7 @@ class han_Home(ReqHandler):
             return
         
         with self.app.searchindex.searcher() as searcher:
-            results = searcher.search(query)
+            results = searcher.search_page(query, pagenum)
             resultcount = len(results)
             
             ### log search
@@ -57,7 +63,7 @@ class han_Home(ReqHandler):
                 correctstr = corrected.string
 
         tem = self.app.getjenv().get_template('result.html')
-        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount)
+        yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum)
             
 handlers = [
     ('', han_Home),

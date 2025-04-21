@@ -20,5 +20,16 @@
 </ul>
 {% endif %}
 
+<form action="{{ approot }}" method="POST">
+<input type="hidden" name="searchstr" value="{{ searchstr }}">
+<input type="hidden" name="pagenum" value="{{ pagenum-1 }}">
+<input class="FormButton" name="prevpage" type="submit" value="Prev">
+</form>
+<form action="{{ approot }}" method="POST">
+<input type="hidden" name="searchstr" value="{{ searchstr }}">
+<input type="hidden" name="pagenum" value="{{ pagenum+1 }}">
+<input class="FormButton" name="nextpage" type="submit" value="Next">
+</form>
+
 {% endblock %}
 
