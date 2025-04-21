@@ -30,7 +30,8 @@ def cmd_search(args, app):
         return
     
     with app.getsearcher() as searcher:
-        results = searcher.search_page(query, args.page, pagelen=10)
+        pagelen = app.pagelen
+        results = searcher.search_page(query, args.page, pagelen=pagelen)
         
         corrected = searcher.correct_query(query, args.query)
         if corrected.query != query:

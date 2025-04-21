@@ -21,9 +21,6 @@ from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
 from searchlib.util import filehash
 
-# Number of results per page.
-PAGELEN = 10
-
 class han_Home(ReqHandler):
     def do_get(self, req):
         tem = self.app.getjenv().get_template('help.html')
@@ -33,6 +30,7 @@ class han_Home(ReqHandler):
         searchstr = req.get_input_field('searchstr', '')
         searchstr = searchstr.strip()
 
+        pagelen = self.app.pagelen
         try:
             pagenum = int(req.get_input_field('pagenum', 1))
             pagenum = max(1, pagenum)
@@ -53,7 +51,7 @@ class han_Home(ReqHandler):
             return
         
         with self.app.getsearcher() as searcher:
-            results = searcher.search_page(query, pagenum, pagelen=PAGELEN)
+            results = searcher.search_page(query, pagenum, pagelen=pagelen)
             resultcount = len(results)
             runtime = results.results.runtime
             
@@ -91,11 +89,11 @@ class han_Home(ReqHandler):
             result = res = None
             # end of searcher scope
 
-        pagecount = ((resultcount+PAGELEN-1) // PAGELEN)
+        pagecount = ((resultcount+pagelen-1) // pagelen)
         prevavail = (pagenum > 1)
         nextavail = (pagenum < pagecount)
-        showmin = (pagenum-1) * PAGELEN + 1
-        showmax = min(showmin+PAGELEN-1, resultcount)
+        showmin = (pagenum-1) * pagelen + 1
+        showmax = min(showmin+pagelen-1, resultcount)
                 
         tem = self.app.getjenv().get_template('result.html')
         yield tem.render(approot=self.app.approot, searchstr=searchstr, correctstr=correctstr, results=resultobjs, resultcount=resultcount, pagenum=pagenum, pagecount=pagecount, prevavail=prevavail, nextavail=nextavail, showmin=showmin, showmax=showmax)
