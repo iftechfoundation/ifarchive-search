@@ -2,16 +2,17 @@
 
 {% block content %}
 
-<h3>Search Tips</h3>
+<h3>Search Examples</h3>
 
 <ul>
-<li><b>TERM</b>: Simple keyword search.
-<li><b>TERM1 TERM2</b>: Files with all of the given terms.
-<li><b>TERM1 or TERM2</b>: Files with <em>any</em> of the given terms.
-<li><b>date:2015</b>: Files uploaded in the given year.
-<li><b>date:Oct 2015</b>, <b>date:Oct 19 2015</b>, etc: Files uploaded in the given date. The date is parsed flexibly.
-<li><b>name:filename</b>: Files with the given exact filename.
-<li><b>tuid:ID</b>: Files tagged with the given TUID (IFDB ID string).
+<li><i>zork</i>: Simple keyword search.
+<li><i>zork mit</i>: Files with all of the given terms.
+<li><i>zork</i> <b>OR</b> <i>mit</i>: Files with <em>any</em> of the given terms. (The <b>OR</b> must be capitalized.)
+<li><i>zork</i> <b>NOT</b> <i>mit</i>: Files with one term but excluding another.
+<li><b>date:</b><i>2015</i>: Files uploaded in the given year. (No space after the colon.)
+<li><b>date:</b><i>Oct 2015</i>, <b>date:</b><i>Oct 19 2015</i>, etc: Files uploaded in the given date. The date is parsed flexibly.
+<li><b>name:</b><i>wumpus.bas</i> : Files with the given exact filename.
+<li><b>tuid:</b><i>9p8kh3im2j9h2881</i> : Files tagged with the given TUID (IFDB ID string).
 </ul>
 
 <p>
