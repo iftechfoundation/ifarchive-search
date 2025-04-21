@@ -5,14 +5,15 @@
 <h3>Search Examples</h3>
 
 <ul>
-<li><i>zork</i>: Simple keyword search.
-<li><i>zork mit</i>: Files with all of the given terms.
-<li><i>zork</i> <b>OR</b> <i>mit</i>: Files with <em>any</em> of the given terms. (The <b>OR</b> must be capitalized.)
-<li><i>zork</i> <b>NOT</b> <i>mit</i>: Files with one term but excluding another.
-<li><b>date:</b><i>2015</i>: Files uploaded in the given year. (No space after the colon.)
-<li><b>date:</b><i>Oct 2015</i>, <b>date:</b><i>Oct 19 2015</i>, etc: Files uploaded in the given date. The date is parsed flexibly.
-<li><b>name:</b><i>wumpus.bas</i> : Files with the given exact filename.
-<li><b>tuid:</b><i>9p8kh3im2j9h2881</i> : Files tagged with the given TUID (IFDB ID string).
+<li><span class="ExampleTerm">zork</span> &#x2014; Simple keyword search of the Archive description text.
+<li><span class="ExampleTerm">"zork iii"</span> &#x2014; Files with the given phrase.
+<li><span class="ExampleTerm">zork mit</span> &#x2014; Files with all of the given terms.
+<li><span class="ExampleTerm">zork</span> <span class="ExampleOp">OR</span> <span class="ExampleTerm">mit</span> &#x2014; Files with <em>any</em> of the given terms. (The <span class="ExampleOp">OR</span> must be capitalized.)
+<li><span class="ExampleTerm">zork</span> <span class="ExampleOp">NOT</span> <span class="ExampleTerm">mit</span> &#x2014; Files with one term but excluding another.
+<li><span class="ExampleOp">date:</span><span class="ExampleTerm">2015</span> &#x2014; Files uploaded in the given year. (No space after the colon.)
+<li><span class="ExampleOp">date:</span><span class="ExampleTerm">Oct 2015</span> &#x2014; Files uploaded in the given date. The date is parsed flexibly: <span class="ExampleTerm">Oct 10 2015</span>, <span class="ExampleTerm">20151011</span>, a few other forms.
+<li><span class="ExampleOp">name:</span><span class="ExampleTerm">wumpus.bas</span> &#x2014; Files with the given exact filename.
+<li><span class="ExampleOp">tuid:</span><span class="ExampleTerm">9p8kh3im2j9h2881</span> &#x2014; Files tagged with the given TUID (IFDB ID string).
 </ul>
 
 <p>

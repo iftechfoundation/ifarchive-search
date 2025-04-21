@@ -4,7 +4,7 @@
 {% block content %}
 
 {% if correctstr %}
-<p>(Did you mean: "{{ correctstr }}")</p>
+<p>(Did you mean: <span class="ExampleTerm">{{ correctstr }}</span>)</p>
 {% endif %}
 
 {% if not results %}
