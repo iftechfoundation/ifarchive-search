@@ -30,7 +30,7 @@ def cmd_search(args, app):
         return
     
     with app.getsearcher() as searcher:
-        results = searcher.search(query)
+        results = searcher.search_page(query, args.page, pagelen=10)
         
         corrected = searcher.correct_query(query, args.query)
         if corrected.query != query:
@@ -40,7 +40,7 @@ def cmd_search(args, app):
             print('No results')
             return
 
-        print('%d results in %.04f sec:' % (len(results), results.runtime,))
+        print('%d results in %.04f sec:' % (len(results), results.results.runtime,))
         print()
         
         for res in results:
