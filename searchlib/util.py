@@ -1,5 +1,8 @@
 import re
 
+from whoosh.searching import ResultsPage
+from whoosh.collectors import TimeLimitCollector
+
 filehash_pattern = re.compile('([^a-zA-Z0-9_.,;:()@/-])')
 filehash_escaper = lambda match: '=%02X=' % (ord(match.group(1)),)
 def filehash(val):
@@ -66,3 +69,13 @@ def buildtuids(obj):
         ls = ls2
     return ' '.join(ls)
 
+def search_page_timeout(searcher, query, pagenum, pagelen=10, timeout=1.0, **kwargs):
+    """Whoosh utility wrapper: like search_page(), but limits the
+    query time. Raises whoosh.searching.TimeLimit.
+    """
+    kwargs['limit'] = pagenum * pagelen
+    col = searcher.collector(**kwargs)
+    col = TimeLimitCollector(col, timeout)
+    searcher.search_with_collector(query, col)
+    results = col.results()
+    return ResultsPage(results, pagenum, pagelen)

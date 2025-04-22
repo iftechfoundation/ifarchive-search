@@ -19,7 +19,7 @@ import threading
 
 from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
-from searchlib.util import filehash
+from searchlib.util import filehash, search_page_timeout
 
 class han_Home(ReqHandler):
     def do_get(self, req):
@@ -56,7 +56,7 @@ class han_Home(ReqHandler):
             return
         
         with self.app.getsearcher() as searcher:
-            results = searcher.search_page(query, pagenum, pagelen=pagelen)
+            results = search_page_timeout(searcher, query, pagenum, pagelen=pagelen)
             resultcount = len(results)
             runtime = results.results.runtime
             

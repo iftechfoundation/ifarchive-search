@@ -3,6 +3,9 @@ import os, os.path
 import datetime
 
 from searchlib.util import buildmddesc, buildtuids
+from searchlib.util import search_page_timeout
+
+from whoosh.searching import TimeLimit
 
 def run(appinstance):
     """The entry point when search.wsgi is invoked on the command line.
@@ -170,7 +173,13 @@ def cmd_search(args, app):
     
     with app.getsearcher() as searcher:
         pagelen = args.limit or app.pagelen
-        results = searcher.search_page(query, args.page, pagelen=pagelen)
+        timeout = 0.5
+        try:
+            results = search_page_timeout(searcher, query, args.page, pagelen=pagelen, timeout=timeout)
+        except TimeLimit as ex:
+            print('Query time limit (%.03f sec) exceeded' % (timeout,))
+            return
+            
         resultcount = len(results)
 
         pagecount = ((resultcount+pagelen-1) // pagelen)
