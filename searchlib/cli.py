@@ -2,7 +2,7 @@ import argparse
 import os, os.path
 import datetime
 
-from searchlib.util import buildmddesc
+from searchlib.util import buildmddesc, buildtuids
 
 def run(appinstance):
     """The entry point when search.wsgi is invoked on the command line.
@@ -101,9 +101,7 @@ def cmd_build(args, app):
         if shortdesc:
             dirdescmap[dir.name] = shortdesc
             
-        tuids = None
-        if dir.metadata and 'tuid' in dir.metadata:
-            tuids = ' '.join(dir.metadata['tuid'])
+        tuids = buildtuids(dir)
             
         writer.add_document(
             path = dir.name,
@@ -142,9 +140,7 @@ def cmd_build(args, app):
             # I suppose we could walk up the tree until we find a description.
             shortdesc = dirdescmap.get(file.directory, None)
             
-        tuids = None
-        if file.metadata and 'tuid' in file.metadata:
-            tuids = ' '.join(file.metadata['tuid'])
+        tuids = buildtuids(file)
     
         writer.add_document(
             path = file.path,

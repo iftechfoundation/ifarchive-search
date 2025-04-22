@@ -48,3 +48,21 @@ def buildmddesc(obj, all=True):
     
     return '\n'.join(alldesc)
 
+def buildtuids(obj):
+    """Pull out the tuid and tuidcomp lists from an object's metadata,
+    and return them as a space-separated string (or None).
+    """
+    if not obj.metadata:
+        return None
+    ls1 = obj.metadata.get('tuid')
+    ls2 = obj.metadata.get('tuidcomp')
+    if not ls1 and not ls2:
+        return None
+    if ls1 and ls2:
+        ls = ls1 + ls2
+    elif ls1:
+        ls = ls1
+    elif ls2:
+        ls = ls2
+    return ' '.join(ls)
+
