@@ -11,10 +11,10 @@
 <li><span class="ExampleTerm">zork</span> <span class="ExampleOp">OR</span> <span class="ExampleTerm">mit</span> &#x2014; Files with <em>any</em> of the given terms. (The <span class="ExampleOp">OR</span> must be capitalized.)
 <li><span class="ExampleTerm">zork</span> <span class="ExampleOp">NOT</span> <span class="ExampleTerm">mit</span> &#x2014; Files with one term but excluding another.
 <li><span class="ExampleOp">date:</span><span class="ExampleTerm">2015</span> &#x2014; Files uploaded in the given year. (No space after the colon.)
-<li><span class="ExampleOp">date:</span><span class="ExampleTerm">Oct 2015</span> &#x2014; Files uploaded in the given date. The date is parsed flexibly: <span class="ExampleTerm">Oct 10 2015</span>, <span class="ExampleTerm">20151011</span>, a few other forms.
+<li><span class="ExampleOp">date:</span><span class="ExampleTerm">Oct 2015</span> &#x2014; Files uploaded on the given date. The date is parsed flexibly: <span class="ExampleTerm">Oct 10 2015</span> or <span class="ExampleTerm">20151011</span> or a few other forms.
 <li><span class="ExampleOp">name:</span><span class="ExampleTerm">wumpus.bas</span> &#x2014; Files with the given exact filename.
-<li><span class="ExampleOp">dir:</span><span class="ExampleTerm">zcode</span> &#x2014; Files within the named directory (any depth).
-<li><span class="ExampleOp">tuid:</span><span class="ExampleTerm">9p8kh3im2j9h2881</span> &#x2014; Files tagged with the given TUID (IFDB ID string).
+<li><span class="ExampleOp">dir:</span><span class="ExampleTerm">zcode</span> &#x2014; Files within the named directory (any depth). May not include slashes, sadly -- only single directory names.
+<li><span class="ExampleOp">tuid:</span><span class="ExampleTerm">9p8kh3im2j9h2881</span> &#x2014; Files tagged with the given TUID (IFDB ID string). This includes TUIDs for both games and competitions.
 </ul>
 
 <p>
@@ -25,11 +25,12 @@ See <a href="https://whoosh.readthedocs.io/en/latest/querylang.html">the Whoosh 
 <p>
 This form searches files stored on the
 <a href="https://ifarchive.org">IF Archive</a>.
+It is handy for finding interpreters, development tools,
+articles, information, and specific files.
 If you want to search for IF games by bibliographic information
 (author, year, platform, competitions or awards) we recommend you
 <a href="https://ifdb.org/search">search on IFDB</a>
-instead. This form is better for finding interpreters, development tools,
-articles, information, and specific files.
+instead.
 </p>
 
 {% endblock %}
