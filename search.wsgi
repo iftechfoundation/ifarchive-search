@@ -17,6 +17,8 @@ import configparser
 import logging, logging.handlers
 import threading
 
+from whoosh.searching import TimeLimit
+
 from tinyapp.handler import ReqHandler
 from searchlib.searchapp import SearchApp
 from searchlib.util import filehash, search_page_timeout
@@ -54,45 +56,53 @@ class han_Home(ReqHandler):
             tem = self.app.getjenv().get_template('help.html')
             yield tem.render(approot=self.app.approot, searchstr=searchstr, message='Your search query could not be parsed.')
             return
-        
-        with self.app.getsearcher() as searcher:
-            results = search_page_timeout(searcher, query, pagenum, pagelen=pagelen)
-            resultcount = len(results)
-            runtime = results.results.runtime
-            
-            req.loginfo('search "%s" (%d results, %.04f sec)', searchstr, resultcount, runtime)
-            
-            resultobjs = []
-            for res in results:
-                obj = dict(res.fields())
-                if obj.get('type') == 'dir':
-                    obj['isdir'] = True
-                if 'date' in obj:
-                    obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
-                if 'path' in obj:
-                    path = obj['path']
-                    spath = path
-                    if spath.startswith('if-archive/'):
-                        spath = spath[ 11 : ]
-                    pathhead, _, pathtail = spath.rpartition('/')
-                    obj['pathhead'] = pathhead
-                    obj['pathtail'] = pathtail
-                    # We don't include the server for annoying urlencode reasons
+
+        try:
+            with self.app.getsearcher() as searcher:
+                results = search_page_timeout(searcher, query, pagenum, pagelen=pagelen, timeout=self.app.querytimeout)
+                    
+                resultcount = len(results)
+                runtime = results.results.runtime
+                
+                req.loginfo('search "%s" (%d results, %.04f sec)', searchstr, resultcount, runtime)
+                
+                resultobjs = []
+                for res in results:
+                    obj = dict(res.fields())
                     if obj.get('type') == 'dir':
-                        obj['url'] = 'indexes/'+path
-                    else:
-                        dirname, _, filename = path.rpartition('/')
-                        obj['url'] = 'indexes/'+dirname
-                        obj['urlfrag'] = filehash(filename)
-                resultobjs.append(obj)
-
-            correctstr = None
-            corrected = searcher.correct_query(query, searchstr)
-            if corrected.query != query:
-                correctstr = corrected.string
-
-            result = res = None
-            # end of searcher scope
+                        obj['isdir'] = True
+                    if 'date' in obj:
+                        obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
+                    if 'path' in obj:
+                        path = obj['path']
+                        spath = path
+                        if spath.startswith('if-archive/'):
+                            spath = spath[ 11 : ]
+                        pathhead, _, pathtail = spath.rpartition('/')
+                        obj['pathhead'] = pathhead
+                        obj['pathtail'] = pathtail
+                        # We don't include the server for annoying urlencode reasons
+                        if obj.get('type') == 'dir':
+                            obj['url'] = 'indexes/'+path
+                        else:
+                            dirname, _, filename = path.rpartition('/')
+                            obj['url'] = 'indexes/'+dirname
+                            obj['urlfrag'] = filehash(filename)
+                    resultobjs.append(obj)
+    
+                correctstr = None
+                corrected = searcher.correct_query(query, searchstr)
+                if corrected.query != query:
+                    correctstr = corrected.string
+    
+                result = res = None
+                # end of searcher scope
+                
+        except TimeLimit as ex:
+            req.logwarning('search "%s" timed out', searchstr)
+            tem = self.app.getjenv().get_template('help.html')
+            yield tem.render(approot=self.app.approot, searchstr=searchstr, message='Your search query took too long.')
+            return
 
         pagecount = ((resultcount+pagelen-1) // pagelen)
         prevavail = (pagenum > 1)
