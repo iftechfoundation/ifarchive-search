@@ -1,5 +1,8 @@
 import argparse
 import os, os.path
+import datetime
+
+from searchlib.util import buildmddesc
 
 def run(appinstance):
     """The entry point when search.wsgi is invoked on the command line.
@@ -73,7 +76,92 @@ def cmd_build(args, app):
 
     SHORTDESC = 300
     writer = index.writer()
+
+    itemcount = 0
+    dirdescmap = {}
+
+    for dir in dirs.values():
+        if dir.name == 'if-archive':
+            # skip the root
+            continue
+        
+        dirstr = None
+        dls = dir.name.split('/')
+        if dls and dls[0] == 'if-archive':
+            del dls[0]
+        if dls:
+            dirstr = ','.join(dls)
+    
+        _, _, name = dir.name.rpartition('/')
+        alldesc = buildmddesc(dir)
+    
+        shortdesc = buildmddesc(dir, all=False)
+        if shortdesc:
+            shortdesc = shortdesc.strip()
+        if shortdesc:
+            dirdescmap[dir.name] = shortdesc
+            
+        tuids = None
+        if dir.metadata and 'tuid' in dir.metadata:
+            tuids = ' '.join(dir.metadata['tuid'])
+            
+        writer.add_document(
+            path = dir.name,
+            name = name,
+            dir = dirstr,
+            type = 'dir',
+            description = alldesc,
+            shortdesc = shortdesc,
+            tuid = tuids,
+        )
+        itemcount += 1
+    
+    for file in files.values():
+        if file.symlink:
+            continue
+        date = None
+        if file.rawdate is not None:
+            date = datetime.datetime.fromtimestamp(file.rawdate)
+    
+        dirstr = None
+        dls = file.directory.split('/')
+        if dls and dls[0] == 'if-archive':
+            del dls[0]
+        if dls:
+            dirstr = ','.join(dls)
+    
+        alldesc = buildmddesc(file)
+        
+        shortdesc = buildmddesc(file, all=False)
+        if shortdesc:
+            shortdesc = shortdesc.strip()
+        if shortdesc:
+            if len(shortdesc) > SHORTDESC:
+                shortdesc = shortdesc[ 0 : SHORTDESC ] + '...'
+        if not shortdesc:
+            # I suppose we could walk up the tree until we find a description.
+            shortdesc = dirdescmap.get(file.directory, None)
+            
+        tuids = None
+        if file.metadata and 'tuid' in file.metadata:
+            tuids = ' '.join(file.metadata['tuid'])
+    
+        writer.add_document(
+            path = file.path,
+            name = file.name,
+            dir = dirstr,
+            type = 'file',
+            description = alldesc,
+            shortdesc = shortdesc,
+            date = date,
+            size = file.size,
+            tuid = tuids,
+        )
+        itemcount += 1
+
     writer.commit(mergetype=whoosh.writing.CLEAR)
+    
+    print('Indexed %d items' % (itemcount,))
     
 def cmd_search(args, app):
     """Perform a search and display the result(s).
