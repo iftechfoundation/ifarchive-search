@@ -55,8 +55,10 @@ def cmd_build(args, app):
     
         # STORED fields are returned as part of the result object; they are not
         #   indexed (not searchable).
-        # stored=True fields are returned as part of the result object, but they
-        #   *are* searchable.
+        # stored=True fields are returned as part of the result object, but
+        #   they *are* searchable.
+        # The unique=True flag on path will be useful if we do incremental
+        #   index updates. (It is not enforced as unique by whoosh, though.)
         # KEYWORD fields are searchable lists.
         # The "description" field gets fancy full-text searchability, including
         #   stemming, accent-folding, etc.
