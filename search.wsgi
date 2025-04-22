@@ -42,6 +42,11 @@ class han_Home(ReqHandler):
             yield tem.render(approot=self.app.approot, searchstr=searchstr)
             return
 
+        if not self.app.queryparser or not self.app.searchindex:
+            tem = self.app.getjenv().get_template('help.html')
+            yield tem.render(approot=self.app.approot, searchstr=searchstr, message='The search index has not yet been built.')
+            return
+
         try:
             query = self.app.queryparser.parse(searchstr)
         except Exception as ex:

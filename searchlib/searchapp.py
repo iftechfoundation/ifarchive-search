@@ -26,9 +26,16 @@ class SearchApp(TinyApp):
         # Thread-local storage for various things which are not thread-safe.
         self.threadcache = threading.local()
 
-        self.searchindex = open_dir(self.searchindexdir)
-        self.queryparser = QueryParser('description', self.searchindex.schema)
-        self.queryparser.add_plugin(DateParserPlugin(free=True))
+        # This will fail if there's no search index at all.
+        # Allow that for the moment.
+        try:
+            self.searchindex = open_dir(self.searchindexdir)
+            self.queryparser = QueryParser('description', self.searchindex.schema)
+            self.queryparser.add_plugin(DateParserPlugin(free=True))
+        except Exception as ex:
+            self.logwarning(None, 'Unable to open search index: %s', ex)
+            self.searchindex = None
+            self.queryparser = None
 
     def getjenv(self):
         """Get or create a jinja template environment. These are

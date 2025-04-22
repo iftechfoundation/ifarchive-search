@@ -9,7 +9,7 @@ def run(appinstance):
 
     popt_build = subopt.add_parser('build', help='build the search index')
     popt_build.set_defaults(cmdfunc=cmd_build)
-    popt_build.add_argument('--create', type=bool, default=False)
+    popt_build.add_argument('--create', action='store_true')
     
     popt_search = subopt.add_parser('search', help='perform a search')
     popt_search.set_defaults(cmdfunc=cmd_search)
@@ -34,7 +34,46 @@ def cmd_build(args, app):
     You probably only need to do this if the schema changes. Restart
     httpd after using this option.
     """
-    pass
+    import ifarchivexml
+    from whoosh.index import create_in, open_dir
+    from whoosh.fields import Schema, TEXT, ID, KEYWORD, DATETIME, NUMERIC, STORED
+    import whoosh.writing
+    from whoosh.analysis import StemmingAnalyzer, CharsetFilter
+    from whoosh.support.charset import accent_map
+    
+    (root, dirs, files) = ifarchivexml.parse(app.masterindexpath)
+
+    if args.create:
+        print('Creating index from scratch...')
+        analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
+    
+        # STORED fields are returned as part of the result object; they are not
+        #   indexed (not searchable).
+        # stored=True fields are returned as part of the result object, but they
+        #   *are* searchable.
+        # KEYWORD fields are searchable lists.
+        # The "description" field gets fancy full-text searchability, including
+        #   stemming, accent-folding, etc.
+        
+        schema = Schema(
+            type=STORED,           # "file" or "dir"
+            description=TEXT(analyzer=analyzer),   # the primary search text
+            shortdesc=STORED,      # snippet of the description; displayed not indexed
+            name=ID,               # bare filename
+            path=ID(stored=True),  # full path
+            dir=KEYWORD(commas=True),  # directory segments, comma-separated list
+            date=DATETIME(stored=True),
+            size=NUMERIC,          # in bytes
+            tuid=KEYWORD,          # tuids, space-separated list
+        )
+        index = create_in(app.searchindexdir, schema)
+    else:
+        print('Rebuilding index...')
+        index = open_dir(app.searchindexdir)
+
+    SHORTDESC = 300
+    writer = index.writer()
+    writer.commit(mergetype=whoosh.writing.CLEAR)
     
 def cmd_search(args, app):
     """Perform a search and display the result(s).
