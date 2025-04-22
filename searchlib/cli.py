@@ -66,7 +66,7 @@ def cmd_build(args, app):
             description=TEXT(analyzer=analyzer),   # the primary search text
             shortdesc=STORED,      # snippet of the description; displayed not indexed
             name=ID,               # bare filename
-            path=ID(stored=True),  # full path
+            path=ID(unique=True, stored=True),  # full path
             dir=KEYWORD(commas=True),  # directory segments, comma-separated list
             date=DATETIME(stored=True),
             size=NUMERIC,          # in bytes
