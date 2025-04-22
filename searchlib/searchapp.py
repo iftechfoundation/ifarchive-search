@@ -22,6 +22,7 @@ class SearchApp(TinyApp):
         self.approot = config['Search']['AppRoot']
         self.template_path = config['Search']['TemplateDir']
         self.pagelen = int(config['Search']['ResultsPerPage'])
+        self.querytimeout = float(config['Search']['QueryTimeout'])
 
         # Thread-local storage for various things which are not thread-safe.
         self.threadcache = threading.local()

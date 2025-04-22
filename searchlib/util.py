@@ -75,7 +75,8 @@ def search_page_timeout(searcher, query, pagenum, pagelen=10, timeout=1.0, **kwa
     """
     kwargs['limit'] = pagenum * pagelen
     col = searcher.collector(**kwargs)
-    col = TimeLimitCollector(col, timeout)
+    # SIGALRM interacts badly with Apache, so we use the cooperative mode of TimeLimitCollector.
+    col = TimeLimitCollector(col, timeout, use_alarm=False)
     searcher.search_with_collector(query, col)
     results = col.results()
     return ResultsPage(results, pagenum, pagelen)
