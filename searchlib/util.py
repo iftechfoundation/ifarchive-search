@@ -73,6 +73,7 @@ def search_page_timeout(searcher, query, pagenum, pagelen=10, timeout=1.0, **kwa
     """Whoosh utility wrapper: like search_page(), but limits the
     query time. Raises whoosh.searching.TimeLimit.
     """
+    kwargs = dict(kwargs)
     kwargs['limit'] = pagenum * pagelen
     col = searcher.collector(**kwargs)
     # SIGALRM interacts badly with Apache, so we use the cooperative mode of TimeLimitCollector.
