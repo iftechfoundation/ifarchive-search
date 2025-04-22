@@ -37,7 +37,7 @@ def cmd_build(args, app):
     You probably only need to do this if the schema changes. Restart
     httpd after using this option.
     """
-    import ifarchivexml
+    from searchlib import ifarchivexml
     from whoosh.index import create_in, open_dir
     from whoosh.fields import Schema, TEXT, ID, KEYWORD, DATETIME, NUMERIC, STORED
     import whoosh.writing
