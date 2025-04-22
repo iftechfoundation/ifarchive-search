@@ -49,3 +49,9 @@ The `--create` option wipes the search index completely (if present) and recreat
     search.wsgi search [ --page PAGE ] [ --limit LIMIT ] QUERY
 
 Perform a search on the command line. Normally returns a maximum of 10 results per page; you can increase this with `--limit`. If there are more results, use `--page 2` and so on.
+
+## Testing
+
+It is possible to test the admin interface on a local Apache server. See the [TESTING.md][] file in the [admintool][] repo. (Except this repo is not yet set up for Docker.)
+
+[TESTING.md]: https://github.com/iftechfoundation/ifarchive-admintool/blob/main/TESTING.md
