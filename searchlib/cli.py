@@ -202,7 +202,7 @@ def cmd_search(args, app):
         showmax = min(showmin+pagelen-1, resultcount)
 
         corrected = searcher.correct_query(query, args.query)
-        if corrected.query != query:
+        if corrected.query != query and corrected.string != args.query:
             print('Did you mean: "%s"' % (corrected.string,))
         
         if not len(results):

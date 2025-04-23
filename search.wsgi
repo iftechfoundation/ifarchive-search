@@ -93,7 +93,7 @@ class han_Home(ReqHandler):
     
                 correctstr = None
                 corrected = searcher.correct_query(query, searchstr)
-                if corrected.query != query:
+                if corrected.query != query and corrected.string != searchstr:
                     correctstr = corrected.string
     
                 result = res = None
