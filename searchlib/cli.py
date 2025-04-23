@@ -180,6 +180,7 @@ def cmd_search(args, app):
             results = search_page_timeout(searcher, query, args.page, pagelen=pagelen, timeout=app.querytimeout)
         except TimeLimit as ex:
             print('Query time limit (%.03f sec) exceeded' % (app.querytimeout,))
+            logging.warning('search "%s" timed out', args.query)
             return
             
         resultcount = len(results)
