@@ -4,7 +4,7 @@ import datetime
 import time
 import logging
 
-from searchlib.util import buildmddesc, buildtuids
+from searchlib.util import buildmddesc, buildtuids, buildwiki
 from searchlib.util import search_page_timeout
 
 from whoosh.searching import TimeLimit
@@ -73,10 +73,11 @@ def cmd_build(args, app):
             shortdesc=STORED,      # snippet of the description; displayed not indexed
             name=ID,               # bare filename
             path=ID(unique=True, stored=True),  # full path
-            dir=KEYWORD(commas=True),  # directory segments, comma-separated list
+            dir=KEYWORD(commas=True, scorable=True),  # directory segments, comma-separated list
             date=DATETIME(stored=True),
             size=NUMERIC,          # in bytes
-            tuid=KEYWORD,          # tuids, space-separated list
+            tuid=KEYWORD(scorable=True),          # tuids, space-separated list
+            wiki=KEYWORD(scorable=True, lowercase=True), # wiki pages, space-separated list (spaces in terms are replaced with underscores)
         )
         index = create_in(app.searchindexdir, schema)
     else:
@@ -111,6 +112,7 @@ def cmd_build(args, app):
             dirdescmap[dir.name] = shortdesc
             
         tuids = buildtuids(dir)
+        wiki = buildwiki(dir)
             
         writer.add_document(
             path = dir.name,
@@ -120,6 +122,7 @@ def cmd_build(args, app):
             description = alldesc,
             shortdesc = shortdesc,
             tuid = tuids,
+            wiki = wiki,
         )
         itemcount += 1
     
@@ -150,6 +153,7 @@ def cmd_build(args, app):
             shortdesc = dirdescmap.get(file.directory, None)
             
         tuids = buildtuids(file)
+        wiki = buildwiki(file)
     
         writer.add_document(
             path = file.path,

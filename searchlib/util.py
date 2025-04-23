@@ -69,6 +69,19 @@ def buildtuids(obj):
         ls = ls2
     return ' '.join(ls)
 
+def buildwiki(obj):
+    """Pull out the ifwiki list from an object's metadata,
+    and return them as a space-separated string (or None).
+    We replace spaces with underscores (because that's what ifmap does).
+    """
+    if not obj.metadata:
+        return None
+    ls = obj.metadata.get('ifwiki')
+    if not ls:
+        return None
+    ls = [ val.replace(' ', '_') for val in ls ]
+    return ' '.join(ls)
+    
 def search_page_timeout(searcher, query, pagenum, pagelen=10, timeout=1.0, **kwargs):
     """Whoosh utility wrapper: like search_page(), but limits the
     query time. Raises whoosh.searching.TimeLimit.
