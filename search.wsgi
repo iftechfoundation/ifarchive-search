@@ -63,8 +63,9 @@ class han_Home(ReqHandler):
                     
                 resultcount = len(results)
                 runtime = results.results.runtime
-                
-                req.loginfo('search "%s" (%d results, %.04f sec)', searchstr, resultcount, runtime)
+
+                pagestr = '' if (pagenum == 1) else ('page %d, ' % (pagenum,))
+                req.loginfo('search "%s" (%d results, %s%.04f sec)', searchstr, resultcount, pagestr, runtime)
                 
                 resultobjs = []
                 for res in results:
