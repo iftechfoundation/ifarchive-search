@@ -1,6 +1,7 @@
 import argparse
 import os, os.path
 import datetime
+import logging
 
 from searchlib.util import buildmddesc, buildtuids
 from searchlib.util import search_page_timeout
@@ -202,6 +203,9 @@ def cmd_search(args, app):
         print('Showing %s%d results in %.04f sec:' % (val, len(results), results.results.runtime,))
         print()
         
+        pagestr = '' if (args.page == 1) else ('page %d, ' % (args.page,))
+        logging.info('CLI: search "%s" (%d results, %s%.04f sec)', args.query, len(results), pagestr, results.results.runtime)
+                
         for res in results:
             fields = res.fields()
             if 'date' in fields:
