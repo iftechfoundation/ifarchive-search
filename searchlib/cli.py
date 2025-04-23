@@ -1,6 +1,7 @@
 import argparse
 import os, os.path
 import datetime
+import time
 import logging
 
 from searchlib.util import buildmddesc, buildtuids
@@ -49,6 +50,8 @@ def cmd_build(args, app):
     from whoosh.support.charset import accent_map
     
     (root, dirs, files) = ifarchivexml.parse(app.masterindexpath)
+
+    starttime = time.time()
 
     if args.create:
         print('Creating index from scratch...')
@@ -158,12 +161,17 @@ def cmd_build(args, app):
             date = date,
             size = file.size,
             tuid = tuids,
+            wiki = wiki,
         )
         itemcount += 1
 
     writer.commit(mergetype=whoosh.writing.CLEAR)
+
+    duration = time.time() - starttime
+    print('Indexed %d items in %.01f sec' % (itemcount, duration))
     
-    print('Indexed %d items' % (itemcount,))
+    val = 'create index' if args.create else 'rebuild index'
+    logging.info('CLI: %s, indexed %d items in %.01f sec', val, itemcount, duration)
     
 def cmd_search(args, app):
     """Perform a search and display the result(s).
