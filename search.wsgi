@@ -29,7 +29,11 @@ class han_Home(ReqHandler):
         yield tem.render(approot=self.app.approot)
         
     def do_post(self, req):
+        # Some forms 'searchstr'; some use 'searchbar' for IFDB compatibility.
+        # We accept either form field name.
         searchstr = req.get_input_field('searchstr', '')
+        if not searchstr:
+            searchstr = req.get_input_field('searchbar', '')
         searchstr = searchstr.strip()
 
         pagelen = self.app.pagelen
