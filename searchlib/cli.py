@@ -53,8 +53,6 @@ def cmd_build(args, app):
         print('Cannot find Master-Index file:', app.masterindexpath)
         return
     
-    (root, dirs, files) = ifarchivexml.parse(app.masterindexpath)
-
     starttime = time.time()
 
     if args.create:
@@ -94,10 +92,12 @@ def cmd_build(args, app):
     itemcount = 0
     dirdescmap = {}
 
-    for dir in dirs.values():
+    def dircallback(dir):
+        nonlocal itemcount
+        
         if dir.name == 'if-archive':
             # skip the root
-            continue
+            return
         
         dirstr = None
         dls = dir.name.split('/')
@@ -130,9 +130,13 @@ def cmd_build(args, app):
         )
         itemcount += 1
     
-    for file in files.values():
+    def filecallback(file):
+        nonlocal itemcount
+        
         if file.symlink:
-            continue
+            # skip symlinks
+            return
+        
         date = None
         if file.rawdate is not None:
             date = datetime.datetime.fromtimestamp(file.rawdate)
@@ -171,7 +175,10 @@ def cmd_build(args, app):
             tuid = tuids,
             wiki = wiki,
         )
+        
         itemcount += 1
+
+    ifarchivexml.parse_callback(app.masterindexpath, dirfunc=dircallback, filefunc=filecallback)
 
     writer.commit(mergetype=whoosh.writing.CLEAR)
 
