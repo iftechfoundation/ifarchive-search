@@ -42,13 +42,15 @@ This will display a list of command-line commands. These include:
 
     search.wsgi build [ --create ]
 
-Rebuild the search index from `Master-Index.xml`. The search app should detect the update and provide the updated search info immediately.
+Rebuild the search index from `Master-Index.xml`. Run this as root. The search app should detect the update and provide the updated search info immediately.
 
 The `--create` option wipes the search index completely (if present) and recreates it from scratch. You should only need to do this once. After using this option, restart httpd.
 
     search.wsgi search [ --page PAGE ] [ --limit LIMIT ] QUERY
 
-Perform a search on the command line. Normally returns a maximum of 10 results per page; you can increase this with `--limit`. If there are more results, use `--page 2` and so on.
+Perform a search on the command line. (Does not have to be run as root.)
+
+Normally returns a maximum of 10 results per page; you can increase this with `--limit`. If there are more results, use `--page 2` and so on.
 
 ## Testing
 
