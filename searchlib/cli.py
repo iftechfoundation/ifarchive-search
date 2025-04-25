@@ -48,6 +48,10 @@ def cmd_build(args, app):
     import whoosh.writing
     from whoosh.analysis import StemmingAnalyzer, CharsetFilter
     from whoosh.support.charset import accent_map
+
+    if not os.path.exists(app.masterindexpath):
+        print('Cannot find Master-Index file:', app.masterindexpath)
+        return
     
     (root, dirs, files) = ifarchivexml.parse(app.masterindexpath)
 
