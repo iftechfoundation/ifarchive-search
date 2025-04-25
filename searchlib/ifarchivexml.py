@@ -18,9 +18,19 @@ example) to IFDir objects. files is a dictionary mapping file pathname
 You can display the contents of either an IFDir or IFFile object with
 the obj.dump() method.
 
+There is also a callback form:
+  ifarchivexml.parse_callback('Master-Index.xml', dirfunc=FUNC, filefunc=FUNC)
+
+The parse_callback() function returns nothing; it calls the given functions
+on each IFDir and IFFile as they are encountered. (You don't have to
+supply both callbacks.) Master-Index.xml is conventionally created in
+directory-tree order, so your callbacks will encounter parents before
+children. In this mode, the parentobj and directoryobj fields of IFDir and
+IFFile will not be set.
+
 Dec 2019: Updated to Python 3; added sha512 and metadata fields.
 Apr 2025: Added parentdesc field; support metadata field for directories;
-  removed xdir field.
+  removed xdir field. Added the parse_callback() form.
 """
 
 CONTEXT_NONE = 0
@@ -103,15 +113,23 @@ class IFFile:
             print(self.parentdescs[key])
 
 class IFAParser(xml.sax.handler.ContentHandler):
-    def __init__(self):
+    def __init__(self, callbacks=None):
         xml.sax.ContentHandler.__init__(self)
+        if not callbacks:
+            self.callbackmode = False
+            self.directories = {}
+            self.files = {}
+        else:
+            self.callbackmode = True
+            self.dircallback = callbacks[0]
+            self.filecallback = callbacks[1]
+            self.directories = None
+            self.files = None
         self.grabbeddata = ''
         self.curdir = None
         self.curfile = None
         self.curitem = None
         self.curmetaowner = None
-        self.directories = {}
-        self.files = {}
         self.orderindex = 0
         self.context = CONTEXT_NONE
         self.elements = {
@@ -174,7 +192,10 @@ class IFAParser(xml.sax.handler.ContentHandler):
     def directory_end(self):
         if (self.context == CONTEXT_DIR):
             name = self.curdir.name
-            self.directories[name] = self.curdir
+            if self.callbackmode:
+                self.dircallback(self.curdir)
+            else:
+                self.directories[name] = self.curdir
             self.curdir = None
             self.context = CONTEXT_NONE
         elif (self.context == CONTEXT_FILE):
@@ -192,7 +213,10 @@ class IFAParser(xml.sax.handler.ContentHandler):
             path = self.curfile.path
             self.curfile.orderindex = self.orderindex
             self.orderindex = self.orderindex+1
-            self.files[path] = self.curfile
+            if self.callbackmode:
+                self.filecallback(self.curfile)
+            else:
+                self.files[path] = self.curfile
             self.curfile = None
             self.context = CONTEXT_NONE
 
@@ -355,17 +379,18 @@ class IFAParser(xml.sax.handler.ContentHandler):
                 self.curfile.description = data
 
     def ifarchive_end(self):
-        for dir in self.directories.values():
-            parent = dir.parent
-            if (parent == ''):
-                dir.parentobj = None
-            else:
-                dir.parentobj = self.directories[parent]
-                dir.parentobj.subdirs.append(dir)
-        for file in self.files.values():
-            parent = file.directory
-            file.directoryobj = self.directories[parent]
-            file.directoryobj.files.append(file)
+        if not self.callbackmode:
+            for dir in self.directories.values():
+                parent = dir.parent
+                if (parent == ''):
+                    dir.parentobj = None
+                else:
+                    dir.parentobj = self.directories[parent]
+                    dir.parentobj.subdirs.append(dir)
+            for file in self.files.values():
+                parent = file.directory
+                file.directoryobj = self.directories[parent]
+                file.directoryobj.files.append(file)
 
 def parse(filename):
     parser = IFAParser()
@@ -377,3 +402,16 @@ def parse(filename):
     rootdir = parser.directories['if-archive']
     result = (rootdir, parser.directories, parser.files)
     return result
+
+def parse_callback(filename, dirfunc=None, filefunc=None):
+    if not dirfunc:
+        dirfunc = lambda obj: None
+    if not filefunc:
+        filefunc = lambda obj: None
+        
+    parser = IFAParser(callbacks=(dirfunc, filefunc))
+
+    fl = open(filename, 'r')
+    xml.sax.parse(fl, parser)
+    fl.close()
+
