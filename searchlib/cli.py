@@ -76,7 +76,7 @@ def cmd_build(args, app):
             name=ID,               # bare filename
             path=ID(unique=True, stored=True),  # full path
             dir=KEYWORD(commas=True, scorable=True),  # directory segments, comma-separated list
-            date=DATETIME(stored=True),
+            date=DATETIME(stored=True, sortable=True),
             size=NUMERIC,          # in bytes
             tuid=KEYWORD(scorable=True),          # tuids, space-separated list
             wiki=KEYWORD(scorable=True, lowercase=True), # wiki pages, space-separated list (spaces in terms are replaced with underscores)
@@ -99,6 +99,10 @@ def cmd_build(args, app):
             # skip the root
             return
         
+        date = None
+        if dir.rawdate is not None:
+            date = datetime.datetime.fromtimestamp(dir.rawdate)
+    
         dirstr = None
         dls = dir.name.split('/')
         if dls and dls[0] == 'if-archive':
@@ -125,6 +129,7 @@ def cmd_build(args, app):
             type = 'dir',
             description = alldesc,
             shortdesc = shortdesc,
+            date = date,
             tuid = tuids,
             wiki = wiki,
         )
