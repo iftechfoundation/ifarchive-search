@@ -29,8 +29,8 @@ children. In this mode, the parentobj and directoryobj fields of IFDir and
 IFFile will not be set.
 
 Dec 2019: Updated to Python 3; added sha512 and metadata fields.
-Apr 2025: Added parentdesc field; support metadata field for directories;
-  removed xdir field. Added the parse_callback() form.
+Apr 2025: Added parentdesc field; support date and metadata fields for
+  directories; removed xdir field. Added the parse_callback() form.
 """
 
 CONTEXT_NONE = 0
@@ -43,6 +43,8 @@ CONTEXT_METAITEM = 5
 
 class IFDir:
     description = None
+    date = None
+    rawdate = None
     metadata = None
     def __init__(self):
         self.subdirs = []
@@ -332,12 +334,20 @@ class IFAParser(xml.sax.handler.ContentHandler):
             data = self.grabdata()
             if (self.curfile is not None):
                 self.curfile.date = data
+        elif (self.context == CONTEXT_DIR):
+            data = self.grabdata()
+            if (self.curdir is not None):
+                self.curdir.date = data
 
     def rawdate_end(self):
         if (self.context == CONTEXT_FILE):
             data = self.grabdata()
             if (self.curfile is not None):
                 self.curfile.rawdate = int(data)
+        elif (self.context == CONTEXT_DIR):
+            data = self.grabdata()
+            if (self.curdir is not None):
+                self.curdir.rawdate = int(data)
 
     def md5_end(self):
         if (self.context == CONTEXT_FILE):
