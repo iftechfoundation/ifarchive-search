@@ -20,6 +20,7 @@ class SearchApp(TinyApp):
         self.masterindexpath = config['DEFAULT']['MasterIndexXML']
         self.searchindexdir = config['Search']['SearchIndexDir']
         self.approot = config['Search']['AppRoot']
+        self.resultsdomain = config['Search'].get('ArchiveDomain', '')
         self.template_path = config['Search']['TemplateDir']
         self.pagelen = int(config['Search']['ResultsPerPage'])
         self.querytimeout = float(config['Search']['QueryTimeout'])
@@ -52,6 +53,7 @@ class SearchApp(TinyApp):
                 keep_trailing_newline = True,
             )
             jenv.globals['approot'] = self.approot
+            jenv.globals['resultsdomain'] = self.resultsdomain
             #jenv.globals['appcssuri'] = self.app_css_uri
             self.threadcache.jenv = jenv
         return jenv
