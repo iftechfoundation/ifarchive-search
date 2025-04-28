@@ -18,9 +18,9 @@ class SearchApp(TinyApp):
         TinyApp.__init__(self, hanclasses)
 
         self.masterindexpath = config['DEFAULT']['MasterIndexXML']
+        self.resultsdomain = config['DEFAULT'].get('ArchiveDomain', '')
         self.searchindexdir = config['Search']['SearchIndexDir']
         self.approot = config['Search']['AppRoot']
-        self.resultsdomain = config['Search'].get('ArchiveDomain', '')
         self.template_path = config['Search']['TemplateDir']
         self.pagelen = int(config['Search']['ResultsPerPage'])
         self.querytimeout = float(config['Search']['QueryTimeout'])
