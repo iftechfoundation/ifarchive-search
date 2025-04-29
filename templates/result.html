@@ -1,5 +1,5 @@
 {% extends "page.html" %}
-
+{% from 'macros.html' import wbrslash %}
 
 {% block content %}
 
@@ -33,7 +33,7 @@
       {% else %}
         {% if res.datestr %}<span class="RightSpan">({{ res.datestr }})</span>{% endif %}
       {% endif %}
-      <a href="{{ resultsdomain }}/{{ res.url|urlencode }}{% if res.urlfrag %}#{{ res.urlfrag }}{% endif %}">{% if res.pathhead %}{{ res.pathhead }}/{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a>
+      <a href="{{ resultsdomain }}/{{ res.url|urlencode }}{% if res.urlfrag %}#{{ res.urlfrag }}{% endif %}">{% if res.pathhead %}{{ wbrslash(res.pathhead) }}/<wbr>{% endif %}<b>{{ res.pathtail }}</b>{% if res.isdir %}/{% endif %}</a>
     </dt>
     {% if res.shortdesc %}<dd class="ShortDesc">{{ res.shortdesc }}{% endif %}
   {% endfor %}
