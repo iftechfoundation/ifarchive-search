@@ -80,18 +80,15 @@ class han_Home(ReqHandler):
                         obj['datestr'] = obj['date'].strftime('%Y-%b-%d')
                     if 'path' in obj:
                         path = obj['path']
-                        spath = path
-                        if spath.startswith('if-archive/'):
-                            spath = spath[ 11 : ]
-                        pathhead, _, pathtail = spath.rpartition('/')
+                        pathhead, _, pathtail = path.rpartition('/')
                         obj['pathhead'] = pathhead
                         obj['pathtail'] = pathtail
                         # We don't include the server for annoying urlencode reasons
                         if obj.get('type') == 'dir':
-                            obj['url'] = 'indexes/'+path
+                            obj['url'] = 'indexes/if-archive/'+path
                         else:
                             dirname, _, filename = path.rpartition('/')
-                            obj['url'] = 'indexes/'+dirname
+                            obj['url'] = 'indexes/if-archive/'+dirname
                             obj['urlfrag'] = filehash(filename)
                     resultobjs.append(obj)
     

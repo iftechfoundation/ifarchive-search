@@ -91,6 +91,7 @@ def cmd_build(args, app):
 
     itemcount = 0
     dirdescmap = {}
+    # dirdescmap maps dir paths (including if-archive/...) to dir short descriptions
 
     def dircallback(dir):
         nonlocal itemcount
@@ -98,19 +99,19 @@ def cmd_build(args, app):
         if dir.name == 'if-archive':
             # skip the root
             return
+        assert dir.name.startswith('if-archive/')
+        dirname = dir.name[ 11 : ]
         
         date = None
         if dir.rawdate is not None:
             date = datetime.datetime.fromtimestamp(dir.rawdate)
     
         dirstr = None
-        dls = dir.name.split('/')
-        if dls and dls[0] == 'if-archive':
-            del dls[0]
+        dls = dirname.split('/')
         if dls:
             dirstr = ','.join(dls)
     
-        _, _, name = dir.name.rpartition('/')
+        _, _, name = dirname.rpartition('/')
         alldesc = buildmddesc(dir)
     
         shortdesc = buildmddesc(dir, all=False)
@@ -123,7 +124,7 @@ def cmd_build(args, app):
         wiki = buildwiki(dir)
             
         writer.add_document(
-            path = dir.name,
+            path = dirname,
             name = name,
             dir = dirstr,
             type = 'dir',
@@ -141,6 +142,9 @@ def cmd_build(args, app):
         if file.symlink:
             # skip symlinks
             return
+        
+        assert file.path.startswith('if-archive/')
+        filepath = file.path[ 11 : ]
         
         date = None
         if file.rawdate is not None:
@@ -169,7 +173,7 @@ def cmd_build(args, app):
         wiki = buildwiki(file)
     
         writer.add_document(
-            path = file.path,
+            path = filepath,
             name = file.name,
             dir = dirstr,
             type = 'file',
